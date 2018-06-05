@@ -14,6 +14,7 @@
 @property (nonatomic, assign) Class clazz;
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, copy) EDOInitializer initializer;
-@property (nonatomic, copy) NSDictionary<NSString *, NSNumber *> *props;
+@property (nonatomic, copy) NSDictionary<NSString *, NSNumber *> *exportedProps;
+@property (nonatomic, copy) NSDictionary<NSString *, id> *bindedMethods;
 
 @end

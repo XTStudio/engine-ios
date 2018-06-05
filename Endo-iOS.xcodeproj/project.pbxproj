@@ -18,9 +18,12 @@
 		90FA924F20C66D2F0096ED9D /* EDOExportable.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA924E20C66D2F0096ED9D /* EDOExportable.m */; };
 		90FA925320C66F6B0096ED9D /* UIView+EDOExporting.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925220C66F6B0096ED9D /* UIView+EDOExporting.m */; };
 		90FA925620C693410096ED9D /* EDOStructValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925520C693410096ED9D /* EDOStructValue.m */; };
+		933BAA0EDCEAB8443DD783AD /* libPods-Endo-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Endo-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C5DB9959260C5C86CFD1D6B /* Pods-Endo-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Endo-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		90FA922B20C667EE0096ED9D /* Endo-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Endo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90FA922E20C667EE0096ED9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		90FA922F20C667EE0096ED9D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -41,6 +44,7 @@
 		90FA925220C66F6B0096ED9D /* UIView+EDOExporting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+EDOExporting.m"; sourceTree = "<group>"; };
 		90FA925420C693410096ED9D /* EDOStructValue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDOStructValue.h; sourceTree = "<group>"; };
 		90FA925520C693410096ED9D /* EDOStructValue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDOStructValue.m; sourceTree = "<group>"; };
+		AFC0F9E0535ED204D738C45F /* Pods-Endo-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Endo-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,12 +52,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				933BAA0EDCEAB8443DD783AD /* libPods-Endo-iOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1EAA54B85127CDC1EAC6E36E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4C5DB9959260C5C86CFD1D6B /* Pods-Endo-iOS.debug.xcconfig */,
+				AFC0F9E0535ED204D738C45F /* Pods-Endo-iOS.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		90FA922220C667EE0096ED9D = {
 			isa = PBXGroup;
 			children = (
@@ -61,6 +75,8 @@
 				90FA922D20C667EE0096ED9D /* Endo-iOS */,
 				90FA925020C66F480096ED9D /* Samples */,
 				90FA922C20C667EE0096ED9D /* Products */,
+				1EAA54B85127CDC1EAC6E36E /* Pods */,
+				B802CC75CB5DF355AF330258 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -112,6 +128,14 @@
 			path = Samples;
 			sourceTree = "<group>";
 		};
+		B802CC75CB5DF355AF330258 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -119,9 +143,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 90FA924120C667EE0096ED9D /* Build configuration list for PBXNativeTarget "Endo-iOS" */;
 			buildPhases = (
+				7BC875FDA4E2E9D55DFA4DCF /* [CP] Check Pods Manifest.lock */,
 				90FA922720C667EE0096ED9D /* Sources */,
 				90FA922820C667EE0096ED9D /* Frameworks */,
 				90FA922920C667EE0096ED9D /* Resources */,
+				25AB9F079B07FB7EAA7D8E66 /* [CP] Embed Pods Frameworks */,
+				CE9A591B76F944066B7D42CE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -176,6 +203,57 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		25AB9F079B07FB7EAA7D8E66 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7BC875FDA4E2E9D55DFA4DCF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Endo-iOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CE9A591B76F944066B7D42CE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		90FA922720C667EE0096ED9D /* Sources */ = {
@@ -327,10 +405,16 @@
 		};
 		90FA924220C667EE0096ED9D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4C5DB9959260C5C86CFD1D6B /* Pods-Endo-iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 544P5CH38C;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEV=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = "Endo-iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -345,6 +429,7 @@
 		};
 		90FA924320C667EE0096ED9D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AFC0F9E0535ED204D738C45F /* Pods-Endo-iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

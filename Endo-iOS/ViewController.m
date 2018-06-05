@@ -21,7 +21,7 @@
     static JSContext *ctx;
     ctx = [[JSContext alloc] init];
     [[EDOExporter sharedExporter] exportWithContext:ctx];
-    [ctx evaluateScript:@"var s = new UIView; s.center = {x: 100, y: 200}; s.center; s = undefined"];
+    [ctx evaluateScript:@"var s = new UIView; s.frame = {x: 100, y: 200, width: 30, height: 30};"];
 }
 
 @end
