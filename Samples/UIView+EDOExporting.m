@@ -14,10 +14,11 @@
 + (void)load {
     [[EDOExporter sharedExporter] exportClass:[self class] name:@"UIView"];
     [[EDOExporter sharedExporter] exportInitializer:[self class] initializer:^id(NSArray *arguments) {
-        return [[UIView alloc] initWithFrame:CGRectZero];
+        return [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     }];
     [[EDOExporter sharedExporter] exportProperty:[self class] propName:@"alpha" propType:EDOPropTypeNumber];
     [[EDOExporter sharedExporter] exportProperty:[self class] propName:@"userInteractionEnabled" propType:EDOPropTypeBoolean];
+    [[EDOExporter sharedExporter] exportStructProperty:[self class] propName:@"center" structType:EDOStructTypeCGPoint];
 }
 
 @end

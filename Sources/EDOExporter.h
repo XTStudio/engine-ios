@@ -8,13 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
+#import "EDOStructValue.h"
 
 typedef id(^EDOInitializer)(NSArray *arguments);
 
 typedef enum: NSUInteger {
-    EDOPropTypeString,
+    EDOPropTypeString = 100,
     EDOPropTypeNumber,
     EDOPropTypeBoolean,
+    EDOPropTypeDictionary,
+    EDOPropTypeArray,
+    EDOPropTypeCustom,
 } EDOPropType;
 
 @protocol EDOJSExport <JSExport>
@@ -33,5 +37,6 @@ typedef enum: NSUInteger {
 - (void)exportClass:(Class)clazz name:(NSString *)name;
 - (void)exportInitializer:(Class)clazz initializer:(EDOInitializer)initializer;
 - (void)exportProperty:(Class)clazz propName:(NSString *)propName propType:(EDOPropType)propType;
+- (void)exportStructProperty:(Class)clazz propName:(NSString *)propName structType:(EDOStructType)structType;
 
 @end
