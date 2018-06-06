@@ -7,9 +7,11 @@
 //
 
 #import <Aspects/Aspects.h>
+#import <objc/runtime.h>
 #import "EDOExporter.h"
 #import "EDOExportable.h"
 #import "NSObject+EDOObjectRef.h"
+#import "EDOObjectTransfer.h"
 
 @interface EDOObjectReference: NSObject
 
@@ -86,16 +88,26 @@
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull classKey, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
         NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){if(arguments[0]instanceof _EDO_MetaClass){this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(arguments[key])}this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(\"%@\",args,this)}}", classKey];
         NSMutableString *propsScript = [NSMutableString string];
-        [obj.exportedProps enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull propKey, NSNumber * _Nonnull obj, BOOL * _Nonnull stop) {
-            [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameMetaClass(\"%@\",this._meta_class)},set:function(value){ENDO.setValueWithPropertyNameValueMetaClass(\"%@\",value,this._meta_class)},enumerable:true,configurable:true});", propKey, propKey, propKey];
+        [obj.exportedProps enumerateObjectsUsingBlock:^(NSString * _Nonnull propKey, NSUInteger idx, BOOL * _Nonnull stop) {
+            [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueMetaClass(\"%@\",value,this._meta_class)},enumerable:true,configurable:true});",
+             [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
+             propKey,
+             propKey];
         }];
-        NSMutableString *methodScript = [NSMutableString string];
-        [obj.bindedMethods enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull methodKey, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        NSMutableString *bindMethodScript = [NSMutableString string];
+        [obj.bindedMethods enumerateObjectsUsingBlock:^(NSString * _Nonnull methodKey, NSUInteger idx, BOOL * _Nonnull stop) {
             NSString *methodName = [methodKey componentsSeparatedByString:@":"].firstObject;
-            [methodScript appendFormat:@"Initializer.prototype.layoutSubviews=function(){};Initializer.prototype.__%@=function(){this.%@.apply(this,arguments)};", methodName, methodName];
+            [bindMethodScript appendFormat:@"Initializer.prototype.%@=function(){};Initializer.prototype.__%@=function(){this.%@.apply(this,arguments)};", methodName, methodName, methodName];
         }];
-        NSString *clazzScript = [NSString stringWithFormat:@"var %@ = /** @class */ (function () { %@ %@ %@ return Initializer; }());",
-                                 classKey, constructorScript, propsScript, methodScript];
+        NSMutableString *exportMethodScript = [NSMutableString string];
+        [obj.exportedMethods enumerateObjectsUsingBlock:^(NSString * _Nonnull methodKey, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *methodName = [methodKey componentsSeparatedByString:@":"].firstObject;
+            [exportMethodScript appendFormat:@"Initializer.prototype.%@ = function () {return ENDO.callMethodWithNameArgumentsMetaClass(\"%@\", arguments, this._meta_class);};",
+             [methodName stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
+             methodKey];
+        }];
+        NSString *clazzScript = [NSString stringWithFormat:@"var %@ = /** @class */ (function () { %@ %@ %@ %@ return Initializer; }());",
+                                 classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript];
         [script appendString:clazzScript];
     }];
     context[@"ENDO"] = [EDOExporter sharedExporter];
@@ -119,36 +131,26 @@
     }];
 }
 
-- (void)exportProperty:(Class)clazz propName:(NSString *)propName propType:(EDOPropType)propType {
+- (void)exportProperty:(Class)clazz propName:(NSString *)propName {
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
         if (obj.clazz == clazz) {
-            NSMutableDictionary *mutableProps = (obj.exportedProps ?: @{}).mutableCopy;
-            [mutableProps setObject:@(propType) forKey:propName];
+            NSMutableArray *mutableProps = (obj.exportedProps ?: @[]).mutableCopy;
+            if (![mutableProps containsObject:propName]) {
+                [mutableProps addObject:propName];
+            }
             obj.exportedProps = mutableProps.copy;
         }
     }];
 }
 
-- (void)exportStructProperty:(Class)clazz propName:(NSString *)propName structType:(EDOStructType)structType {
-    [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
-        if (obj.clazz == clazz) {
-            NSMutableDictionary *mutableProps = (obj.exportedProps ?: @{}).mutableCopy;
-            [mutableProps setObject:@(structType) forKey:propName];
-            obj.exportedProps = mutableProps.copy;
-        }
-    }];
-}
-
-- (void)bindMethodToJavaScript:(Class)clazz selector:(SEL)aSelector invokingBlock:(nullable EDOBindMethodInvokingBlock)invokingBlock {
+- (void)bindMethodToJavaScript:(Class)clazz selector:(SEL)aSelector {
     NSString *selectorName = NSStringFromSelector(aSelector);
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
         if (obj.clazz == clazz) {
-            NSMutableDictionary *bindedMethods = (obj.bindedMethods ?: @{}).mutableCopy;
-            if (invokingBlock != nil) {
-                [bindedMethods setObject:invokingBlock forKey:selectorName];
-            }
-            else {
-                [bindedMethods setObject:[NSNull null] forKey:selectorName];
+            NSAssert(![obj.exportedMethods containsObject:selectorName], @"Can not bindMethod while it has been exported before.");
+            NSMutableArray *bindedMethods = (obj.bindedMethods ?: @[]).mutableCopy;
+            if (![bindedMethods containsObject:selectorName]) {
+                [bindedMethods addObject:selectorName];
             }
             obj.bindedMethods = bindedMethods.copy;
         }
@@ -165,6 +167,20 @@
             }
         }
     } error:NULL];
+}
+
+- (void)exportMethodToJavaScript:(Class)clazz selector:(SEL)aSelector {
+    NSString *selectorName = NSStringFromSelector(aSelector);
+    [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
+        if (obj.clazz == clazz) {
+            NSAssert(![obj.bindedMethods containsObject:selectorName], @"Can not exportMethod while it has been binded before.");
+            NSMutableArray *exportedMethods = (obj.exportedMethods ?: @[]).mutableCopy;
+            if (![exportedMethods containsObject:selectorName]) {
+                [exportedMethods addObject:selectorName];
+            }
+            obj.exportedMethods = exportedMethods.copy;
+        }
+    }];
 }
 
 - (JSValue *)createInstanceWithName:(NSString *)name arguments:(NSArray *)arguments owner:(JSValue *)owner {
@@ -191,25 +207,131 @@
     return objectMetaClass;
 }
 
-- (JSValue *)valueWithPropertyName:(NSString *)name metaClass:(JSValue *)metaClass {
+- (JSValue *)scriptObjectWithObject:(NSObject *)anObject {
+    if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef].value != nil) {
+        return self.scriptObjects[anObject.edo_objectRef].value;
+    }
+    else {
+        for (NSString *aKey in self.exportables) {
+            if (self.exportables[aKey].clazz == anObject.class) {
+                anObject.edo_objectRef = [[NSUUID UUID] UUIDString];
+                JSValue *scriptObject = [[JSContext currentContext] evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",
+                                                                                    self.exportables[aKey].name,
+                                                                                    self.exportables[aKey].name,
+                                                                                    anObject.edo_objectRef]];
+                EDOObjectReference *objectReference = [[EDOObjectReference alloc] initWithValue:anObject];
+                JSValue *objectMetaClass = [scriptObject objectForKeyedSubscript:@"_meta_class"];
+                objectReference.metaClassManagedValue = [[JSManagedValue alloc] initWithValue:objectMetaClass];
+                @synchronized(self) {
+                    [self.references setObject:objectReference forKey:anObject.edo_objectRef];
+                    [self.scriptObjects setObject:[JSManagedValue managedValueWithValue:scriptObject] forKey:anObject.edo_objectRef];
+                }
+                return scriptObject;
+            }
+        }
+        return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+    }
+}
+
+- (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner {
+    NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner];
+    if ([ownerObject isKindOfClass:[NSObject class]]) {
+        @try {
+            id returnValue = [ownerObject valueForKey:name];
+            JSValue *s = [EDOObjectTransfer convertToJSValueWithObject:returnValue];
+            return s;
+        } @catch (NSException *exception) { } @finally { }
+    }
+//    @try {
+//        NSString *objectRef = [metaClass toDictionary][@"objectRef"];
+//        Class objectClazz = NSClassFromString([metaClass toDictionary][@"classname"]);
+//        if ([objectRef isKindOfClass:[NSString class]]) {
+//            EDOObjectReference *weakRef = self.references[objectRef];
+//            if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
+//                NSObject *anObject = weakRef.value;
+//                if ([anObject isKindOfClass:[NSObject class]]) {
+//                    for (NSString *key in self.exportables) {
+//                        if (self.exportables[key].clazz == objectClazz) {
+//                            NSUInteger propType = [self.exportables[key].exportedProps[name] unsignedIntegerValue];
+//                            if (propType >= 1000 && propType < 10000) {
+//                                return [EDOStructValue valueForStructType:propType value:[anObject valueForKey:name]];
+//                            }
+//                            break;
+//                        }
+//                    }
+//                    return [anObject valueForKey:name] ?: [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+//                }
+//            }
+//        }
+//    } @catch (NSException *exception) { } @finally { }
+    return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+}
+
+- (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value metaClass:(JSValue *)metaClass {
+//    @try {
+//        NSString *objectRef = [metaClass toDictionary][@"objectRef"];
+//        Class objectClazz = NSClassFromString([metaClass toDictionary][@"classname"]);
+//        if ([objectRef isKindOfClass:[NSString class]]) {
+//            EDOObjectReference *weakRef = self.references[objectRef];
+//            if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
+//                NSObject *anObject = weakRef.value;
+//                if ([anObject isKindOfClass:[NSObject class]]) {
+//                    for (NSString *key in self.exportables) {
+//                        if (self.exportables[key].clazz == objectClazz) {
+//                            NSUInteger propType = [self.exportables[key].exportedProps[name] unsignedIntegerValue];
+//                            if (propType >= 1000 && propType < 10000) {
+//                                [anObject setValue:[EDOStructValue nsValueForStructType:propType value:value] forKey:name];
+//                            }
+//                            else if (propType == EDOPropTypeString && value.isString) {
+//                                [anObject setValue:value.toString forKey:name];
+//                            }
+//                            else if (propType == EDOPropTypeNumber && value.isNumber) {
+//                                [anObject setValue:value.toNumber forKey:name];
+//                            }
+//                            else if (propType == EDOPropTypeBoolean && value.isBoolean) {
+//                                [anObject setValue:@(value.toBool) forKey:name];
+//                            }
+//                            else if (propType == EDOPropTypeArray && value.isArray) {
+//                                [anObject setValue:value.toArray forKey:name];
+//                            }
+//                            else if (propType == EDOPropTypeDictionary && value.isObject) {
+//                                [anObject setValue:value.toDictionary forKey:name];
+//                            }
+//                            else if (value.isUndefined || value.isNull) {
+//                                [anObject setValue:nil forKey:name];
+//                            }
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    } @catch (NSException *exception) { } @finally { }
+}
+
+- (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)jsArguments metaClass:(JSValue *)metaClass {
+    NSArray *arguments = [EDOObjectTransfer convertToNSArgumentsWithJSArguments:jsArguments];
     @try {
         NSString *objectRef = [metaClass toDictionary][@"objectRef"];
-        Class objectClazz = NSClassFromString([metaClass toDictionary][@"classname"]);
         if ([objectRef isKindOfClass:[NSString class]]) {
             EDOObjectReference *weakRef = self.references[objectRef];
             if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
                 NSObject *anObject = weakRef.value;
+                SEL selector = NSSelectorFromString(name);
                 if ([anObject isKindOfClass:[NSObject class]]) {
-                    for (NSString *key in self.exportables) {
-                        if (self.exportables[key].clazz == objectClazz) {
-                            NSUInteger propType = [self.exportables[key].exportedProps[name] unsignedIntegerValue];
-                            if (propType >= 1000 && propType < 10000) {
-                                return [EDOStructValue valueForStructType:propType value:[anObject valueForKey:name]];
-                            }
-                            break;
-                        }
+                    char ret[256];
+                    method_getReturnType(class_getInstanceMethod(anObject.class, selector), ret, 256);
+                    if (strcmp(ret, "v") == 0) {
+                        [anObject performSelector:NSSelectorFromString(name)
+                                       withObject:0 < arguments.count && arguments[0] != [NSNull null] ? arguments[0] : nil
+                                       withObject:1 < arguments.count && arguments[1] != [NSNull null] ? arguments[1] : nil];
                     }
-                    return [anObject valueForKey:name] ?: [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+                    else {
+                        id returnValue = [anObject performSelector:NSSelectorFromString(name)
+                                                        withObject:0 < arguments.count && arguments[0] != [NSNull null] ? arguments[0] : nil
+                                                        withObject:1 < arguments.count && arguments[1] != [NSNull null] ? arguments[1] : nil];
+                        return [EDOObjectTransfer convertToJSValueWithObject:returnValue];
+                    }
                 }
             }
         }
@@ -217,46 +339,15 @@
     return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
 }
 
-- (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value metaClass:(JSValue *)metaClass {
-    @try {
-        NSString *objectRef = [metaClass toDictionary][@"objectRef"];
-        Class objectClazz = NSClassFromString([metaClass toDictionary][@"classname"]);
-        if ([objectRef isKindOfClass:[NSString class]]) {
-            EDOObjectReference *weakRef = self.references[objectRef];
-            if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
-                NSObject *anObject = weakRef.value;
-                if ([anObject isKindOfClass:[NSObject class]]) {
-                    for (NSString *key in self.exportables) {
-                        if (self.exportables[key].clazz == objectClazz) {
-                            NSUInteger propType = [self.exportables[key].exportedProps[name] unsignedIntegerValue];
-                            if (propType >= 1000 && propType < 10000) {
-                                [anObject setValue:[EDOStructValue nsValueForStructType:propType value:value] forKey:name];
-                            }
-                            else if (propType == EDOPropTypeString && value.isString) {
-                                [anObject setValue:value.toString forKey:name];
-                            }
-                            else if (propType == EDOPropTypeNumber && value.isNumber) {
-                                [anObject setValue:value.toNumber forKey:name];
-                            }
-                            else if (propType == EDOPropTypeBoolean && value.isBoolean) {
-                                [anObject setValue:@(value.toBool) forKey:name];
-                            }
-                            else if (propType == EDOPropTypeArray && value.isArray) {
-                                [anObject setValue:value.toArray forKey:name];
-                            }
-                            else if (propType == EDOPropTypeDictionary && value.isObject) {
-                                [anObject setValue:value.toDictionary forKey:name];
-                            }
-                            else if (value.isUndefined || value.isNull) {
-                                [anObject setValue:nil forKey:name];
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
+- (id)valueWithObjectRef:(NSString *)objectRef {
+    if ([objectRef isKindOfClass:[NSString class]]) {
+        EDOObjectReference *weakRef = self.references[objectRef];
+        if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
+            NSObject *anObject = weakRef.value;
+            return anObject;
         }
-    } @catch (NSException *exception) { } @finally { }
+    }
+    return nil;
 }
 
 @end

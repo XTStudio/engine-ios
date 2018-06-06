@@ -12,15 +12,21 @@
 @implementation UIView (EDOExporting)
 
 + (void)load {
-    [[EDOExporter sharedExporter] exportClass:[self class] name:@"UIView"];
-    [[EDOExporter sharedExporter] exportInitializer:[self class] initializer:^id(NSArray *arguments) {
+    EDO_EXPORT_CLASS(@"UIView");
+    EDO_EXPORT_INITIALIZER({
         return [[UIView alloc] initWithFrame:CGRectZero];
-    }];
-    [[EDOExporter sharedExporter] exportProperty:[self class] propName:@"alpha" propType:EDOPropTypeNumber];
-    [[EDOExporter sharedExporter] exportProperty:[self class] propName:@"userInteractionEnabled" propType:EDOPropTypeBoolean];
-    [[EDOExporter sharedExporter] exportStructProperty:[self class] propName:@"frame" structType:EDOStructTypeCGRect];
-    [[EDOExporter sharedExporter] exportStructProperty:[self class] propName:@"center" structType:EDOStructTypeCGPoint];
-    [[EDOExporter sharedExporter] bindMethodToJavaScript:[self class] selector:@selector(layoutSubviews) invokingBlock:nil];
+    });
+    EDO_EXPORT_PROPERTY(@"frame");
+    EDO_EXPORT_PROPERTY(@"center");
+    EDO_EXPORT_PROPERTY(@"intrinsicContentSize");
+    EDO_EXPORT_PROPERTY(@"alpha");
+    EDO_EXPORT_PROPERTY(@"transform");
+    EDO_EXPORT_PROPERTY(@"layoutMargins");
+    EDO_EXPORT_PROPERTY(@"userInteractionEnabled");
+    EDO_EXPORT_PROPERTY(@"superview");
+    EDO_BIND_METHOD(layoutSubviews);
+    EDO_EXPORT_METHOD(removeFromSuperview);
+    EDO_EXPORT_METHOD(addSubview:);
 }
 
 @end
