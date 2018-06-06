@@ -14,7 +14,15 @@
 
 + (JSValue *)convertToJSValueWithObject:(NSObject *)anObject;
 
++ (NSDictionary *)convertToJSDictionaryWithNSArguments:(NSDictionary *)nsDictionary;
+
++ (NSArray *)convertToJSArgumentsWithNSArguments:(NSArray *)nsArguments;
+
 + (id)convertToNSValueWithJSValue:(JSValue *)anValue;
+
++ (id)convertToNSValueWithJSValue:(JSValue *)anValue eageringType:(NSString *)eageringType;
+
++ (NSDictionary *)convertToNSDictionaryWithJSDictionary:(NSDictionary *)jsDictionary;
 
 + (NSArray *)convertToNSArgumentsWithJSArguments:(NSArray *)jsArguments;
 

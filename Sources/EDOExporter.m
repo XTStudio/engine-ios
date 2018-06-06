@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) NSObject *value;
 @property (nonatomic, strong) JSManagedValue *metaClassManagedValue;
+@property (nonatomic, assign) NSInteger edo_retainCount;
 
 @end
 
@@ -89,7 +90,7 @@
         NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){if(arguments[0]instanceof _EDO_MetaClass){this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(arguments[key])}this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(\"%@\",args,this)}}", classKey];
         NSMutableString *propsScript = [NSMutableString string];
         [obj.exportedProps enumerateObjectsUsingBlock:^(NSString * _Nonnull propKey, NSUInteger idx, BOOL * _Nonnull stop) {
-            [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueMetaClass(\"%@\",value,this._meta_class)},enumerable:true,configurable:true});",
+            [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:true,configurable:true});",
              [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
              propKey,
              propKey];
@@ -106,7 +107,7 @@
              [methodName stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
              methodKey];
         }];
-        NSString *clazzScript = [NSString stringWithFormat:@"var %@ = /** @class */ (function () { %@ %@ %@ %@ return Initializer; }());",
+        NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function () { ;%@ ;%@ ;%@ ;%@ ;return Initializer; }());",
                                  classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript];
         [script appendString:clazzScript];
     }];
@@ -207,106 +208,26 @@
     return objectMetaClass;
 }
 
-- (JSValue *)scriptObjectWithObject:(NSObject *)anObject {
-    if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef].value != nil) {
-        return self.scriptObjects[anObject.edo_objectRef].value;
-    }
-    else {
-        for (NSString *aKey in self.exportables) {
-            if (self.exportables[aKey].clazz == anObject.class) {
-                anObject.edo_objectRef = [[NSUUID UUID] UUIDString];
-                JSValue *scriptObject = [[JSContext currentContext] evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",
-                                                                                    self.exportables[aKey].name,
-                                                                                    self.exportables[aKey].name,
-                                                                                    anObject.edo_objectRef]];
-                EDOObjectReference *objectReference = [[EDOObjectReference alloc] initWithValue:anObject];
-                JSValue *objectMetaClass = [scriptObject objectForKeyedSubscript:@"_meta_class"];
-                objectReference.metaClassManagedValue = [[JSManagedValue alloc] initWithValue:objectMetaClass];
-                @synchronized(self) {
-                    [self.references setObject:objectReference forKey:anObject.edo_objectRef];
-                    [self.scriptObjects setObject:[JSManagedValue managedValueWithValue:scriptObject] forKey:anObject.edo_objectRef];
-                }
-                return scriptObject;
-            }
-        }
-        return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
-    }
-}
-
 - (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner {
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
         @try {
             id returnValue = [ownerObject valueForKey:name];
-            JSValue *s = [EDOObjectTransfer convertToJSValueWithObject:returnValue];
-            return s;
+            return [EDOObjectTransfer convertToJSValueWithObject:returnValue];
         } @catch (NSException *exception) { } @finally { }
     }
-//    @try {
-//        NSString *objectRef = [metaClass toDictionary][@"objectRef"];
-//        Class objectClazz = NSClassFromString([metaClass toDictionary][@"classname"]);
-//        if ([objectRef isKindOfClass:[NSString class]]) {
-//            EDOObjectReference *weakRef = self.references[objectRef];
-//            if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
-//                NSObject *anObject = weakRef.value;
-//                if ([anObject isKindOfClass:[NSObject class]]) {
-//                    for (NSString *key in self.exportables) {
-//                        if (self.exportables[key].clazz == objectClazz) {
-//                            NSUInteger propType = [self.exportables[key].exportedProps[name] unsignedIntegerValue];
-//                            if (propType >= 1000 && propType < 10000) {
-//                                return [EDOStructValue valueForStructType:propType value:[anObject valueForKey:name]];
-//                            }
-//                            break;
-//                        }
-//                    }
-//                    return [anObject valueForKey:name] ?: [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
-//                }
-//            }
-//        }
-//    } @catch (NSException *exception) { } @finally { }
     return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
 }
 
-- (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value metaClass:(JSValue *)metaClass {
-//    @try {
-//        NSString *objectRef = [metaClass toDictionary][@"objectRef"];
-//        Class objectClazz = NSClassFromString([metaClass toDictionary][@"classname"]);
-//        if ([objectRef isKindOfClass:[NSString class]]) {
-//            EDOObjectReference *weakRef = self.references[objectRef];
-//            if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
-//                NSObject *anObject = weakRef.value;
-//                if ([anObject isKindOfClass:[NSObject class]]) {
-//                    for (NSString *key in self.exportables) {
-//                        if (self.exportables[key].clazz == objectClazz) {
-//                            NSUInteger propType = [self.exportables[key].exportedProps[name] unsignedIntegerValue];
-//                            if (propType >= 1000 && propType < 10000) {
-//                                [anObject setValue:[EDOStructValue nsValueForStructType:propType value:value] forKey:name];
-//                            }
-//                            else if (propType == EDOPropTypeString && value.isString) {
-//                                [anObject setValue:value.toString forKey:name];
-//                            }
-//                            else if (propType == EDOPropTypeNumber && value.isNumber) {
-//                                [anObject setValue:value.toNumber forKey:name];
-//                            }
-//                            else if (propType == EDOPropTypeBoolean && value.isBoolean) {
-//                                [anObject setValue:@(value.toBool) forKey:name];
-//                            }
-//                            else if (propType == EDOPropTypeArray && value.isArray) {
-//                                [anObject setValue:value.toArray forKey:name];
-//                            }
-//                            else if (propType == EDOPropTypeDictionary && value.isObject) {
-//                                [anObject setValue:value.toDictionary forKey:name];
-//                            }
-//                            else if (value.isUndefined || value.isNull) {
-//                                [anObject setValue:nil forKey:name];
-//                            }
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    } @catch (NSException *exception) { } @finally { }
+- (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value owner:(JSValue *)owner {
+    NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner];
+    if ([ownerObject isKindOfClass:[NSObject class]]) {
+        @try {
+            char ret[256];
+            method_getReturnType(class_getInstanceMethod(ownerObject.class, NSSelectorFromString(name)), ret, 256);
+            [ownerObject setValue:[EDOObjectTransfer convertToNSValueWithJSValue:value eageringType:[NSString stringWithUTF8String:ret]] forKey:name];
+        } @catch (NSException *exception) { } @finally { }
+    }
 }
 
 - (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)jsArguments metaClass:(JSValue *)metaClass {
@@ -339,7 +260,20 @@
     return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
 }
 
-- (id)valueWithObjectRef:(NSString *)objectRef {
+- (id)nsValueWithJSValue:(JSValue *)value {
+    if (value.isObject) {
+        JSValue *metaClassValue = [value objectForKeyedSubscript:@"_meta_class"];
+        if (metaClassValue.isObject) {
+            NSDictionary *metaClassInfo = metaClassValue.toDictionary;
+            if ([metaClassInfo[@"objectRef"] isKindOfClass:[NSString class]]) {
+                return [self nsValueWithObjectRef:metaClassInfo[@"objectRef"]];
+            }
+        }
+    }
+    return nil;
+}
+
+- (id)nsValueWithObjectRef:(NSString *)objectRef {
     if ([objectRef isKindOfClass:[NSString class]]) {
         EDOObjectReference *weakRef = self.references[objectRef];
         if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
@@ -348,6 +282,59 @@
         }
     }
     return nil;
+}
+
+- (JSValue *)scriptObjectWithObject:(NSObject *)anObject {
+    if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef].value != nil) {
+        return self.scriptObjects[anObject.edo_objectRef].value;
+    }
+    else {
+        for (NSString *aKey in self.exportables) {
+            if (self.exportables[aKey].clazz == anObject.class) {
+                anObject.edo_objectRef = [[NSUUID UUID] UUIDString];
+                JSValue *scriptObject = [[JSContext currentContext] evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",
+                                                                                    self.exportables[aKey].name,
+                                                                                    self.exportables[aKey].name,
+                                                                                    anObject.edo_objectRef]];
+                EDOObjectReference *objectReference = [[EDOObjectReference alloc] initWithValue:anObject];
+                JSValue *objectMetaClass = [scriptObject objectForKeyedSubscript:@"_meta_class"];
+                objectReference.metaClassManagedValue = [[JSManagedValue alloc] initWithValue:objectMetaClass];
+                @synchronized(self) {
+                    [self.references setObject:objectReference forKey:anObject.edo_objectRef];
+                    [self.scriptObjects setObject:[JSManagedValue managedValueWithValue:scriptObject] forKey:anObject.edo_objectRef];
+                }
+                return scriptObject;
+            }
+        }
+        return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+    }
+}
+
+#pragma mark - owner management
+
+- (void)retain:(NSObject *)anObject {
+    if (anObject.edo_objectRef != nil) {
+        JSManagedValue *managedObject = self.scriptObjects[anObject.edo_objectRef];
+        EDOObjectReference *objectReference = self.references[anObject.edo_objectRef];
+        if (managedObject != nil && managedObject.value != nil && objectReference != nil) {
+            objectReference.edo_retainCount++;
+            [[managedObject.value.context virtualMachine] addManagedReference:managedObject withOwner:self];
+        }
+    }
+}
+
+- (void)release:(NSObject *)anObject {
+    if (anObject.edo_objectRef != nil) {
+        JSManagedValue *managedObject = self.scriptObjects[anObject.edo_objectRef];
+        EDOObjectReference *objectReference = self.references[anObject.edo_objectRef];
+        if (managedObject != nil && managedObject.value != nil && objectReference != nil) {
+            objectReference.edo_retainCount--;
+            if (objectReference.edo_retainCount <= 0) {
+                [[managedObject.value.context virtualMachine] removeManagedReference:managedObject withOwner:self];
+            }
+            
+        }
+    }
 }
 
 @end

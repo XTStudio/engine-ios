@@ -17,12 +17,14 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 #define EDO_EXPORT_PROPERTY(A) [[EDOExporter sharedExporter] exportProperty:[self class] propName:A];
 #define EDO_BIND_METHOD(A) [[EDOExporter sharedExporter] bindMethodToJavaScript:[self class] selector:@selector(A)];
 #define EDO_EXPORT_METHOD(A) [[EDOExporter sharedExporter] exportMethodToJavaScript:[self class] selector:@selector(A)];
+#define EDO_RETAIN(A) [[EDOExporter sharedExporter] retain:A];
+#define EDO_RELEASE(A) [[EDOExporter sharedExporter] release:A];
 
 @protocol EDOJSExport <JSExport>
 
 - (NSString *)createInstanceWithName:(NSString *)name arguments:(NSArray *)arguments owner:(JSValue *)owner;
 - (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner;
-- (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value metaClass:(JSValue *)metaClass;
+- (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value owner:(JSValue *)owner;
 - (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)arguments metaClass:(JSValue *)metaClass;
 
 @end
@@ -37,7 +39,10 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (void)exportProperty:(Class)clazz propName:(nonnull NSString *)propName;
 - (void)bindMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;
 - (void)exportMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;
-- (nullable id)valueWithObjectRef:(nonnull NSString *)objectRef;
+- (nullable id)nsValueWithJSValue:(JSValue *)value;
+- (nullable id)nsValueWithObjectRef:(nonnull NSString *)objectRef;
 - (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject;
+- (void)retain:(NSObject *)anObject;
+- (void)release:(NSObject *)anObject;
 
 @end

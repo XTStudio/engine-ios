@@ -8,6 +8,7 @@
 
 #import "UIView+EDOExporting.h"
 #import "EDOExporter.h"
+#import <Aspects/Aspects.h>
 
 @implementation UIView (EDOExporting)
 
@@ -24,9 +25,17 @@
     EDO_EXPORT_PROPERTY(@"layoutMargins");
     EDO_EXPORT_PROPERTY(@"userInteractionEnabled");
     EDO_EXPORT_PROPERTY(@"superview");
+    EDO_EXPORT_PROPERTY(@"subviews");
+    EDO_EXPORT_PROPERTY(@"backgroundColor");
     EDO_BIND_METHOD(layoutSubviews);
     EDO_EXPORT_METHOD(removeFromSuperview);
     EDO_EXPORT_METHOD(addSubview:);
+    [self aspect_hookSelector:@selector(didAddSubview:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo, UIView *subview) {
+        EDO_RETAIN(subview);
+    } error:NULL];
+    [self aspect_hookSelector:@selector(willRemoveSubview:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo, UIView *subview) {
+        EDO_RELEASE(subview);
+    } error:NULL];
 }
 
 @end
