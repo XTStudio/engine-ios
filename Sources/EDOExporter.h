@@ -11,7 +11,7 @@
 
 typedef id(^EDOInitializer)(NSArray *arguments);
 
-#define EDO_EXPORT_CLASS(A) [[EDOExporter sharedExporter] exportClass:[self class] name:A];
+#define EDO_EXPORT_CLASS(A, B) [[EDOExporter sharedExporter] exportClass:[self class] name:A superName:B];
 #define EDO_EXPORT_INITIALIZER(BLOCK) [[EDOExporter sharedExporter] exportInitializer:[self class] initializer:^id(NSArray *arguments) BLOCK ];
 #define EDO_EXPORT_PROPERTY(A) [[EDOExporter sharedExporter] exportProperty:[self class] propName:A];
 #define EDO_BIND_METHOD(A) [[EDOExporter sharedExporter] bindMethodToJavaScript:[self class] selector:@selector(A)];
@@ -33,7 +33,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 + (EDOExporter *)sharedExporter;
 
 - (void)exportWithContext:(nonnull JSContext *)context;
-- (void)exportClass:(Class)clazz name:(nonnull NSString *)name;
+- (void)exportClass:(Class)clazz name:(nonnull NSString *)name superName:(NSString *)superName;
 - (void)exportInitializer:(Class)clazz initializer:(nonnull EDOInitializer)initializer;
 - (void)exportProperty:(Class)clazz propName:(nonnull NSString *)propName;
 - (void)bindMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;

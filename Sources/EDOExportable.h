@@ -13,6 +13,7 @@
 
 @property (nonatomic, assign) Class clazz;
 @property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *superName;
 @property (nonatomic, copy) EDOInitializer initializer;
 @property (nonatomic, copy) NSArray<NSString *> *exportedProps;
 @property (nonatomic, copy) NSArray<NSString *> *bindedMethods;

@@ -113,6 +113,15 @@
     else if (anValue.isArray) {
         return [self convertToNSArgumentsWithJSArguments:anValue.toArray owner:owner];
     }
+    else if (anValue.isNumber) {
+        return anValue.toNumber;
+    }
+    else if (anValue.isString) {
+        return anValue.toString;
+    }
+    else if (anValue.isBoolean) {
+        return anValue.toNumber;
+    }
     return nil;
 }
 

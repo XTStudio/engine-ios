@@ -86,39 +86,58 @@
 - (void)exportWithContext:(JSContext *)context {
     NSMutableString *script = [NSMutableString string];
     [script appendString:@"var __extends=(this&&this.__extends)||(function(){var extendStatics=Object.setPrototypeOf||({__proto__:[]}instanceof Array&&function(d,b){d.__proto__=b})||function(d,b){for(var p in b)if(b.hasOwnProperty(p))d[p]=b[p]};return function(d,b){extendStatics(d,b);function __(){this.constructor=d}d.prototype=b===null?Object.create(b):(__.prototype=b.prototype,new __())}})();var _EDO_MetaClass = /** @class */ (function () { function _EDO_MetaClass(classname, objectRef) { this.classname = classname; this.objectRef = objectRef; } return _EDO_MetaClass; }());var _EDO_Callback=(function(){function _EDO_Callback(func){this.func=func;this._meta_class={classname:\"__Function\"}}return _EDO_Callback}());var EDOObject=(function(){function EDOObject(){this.__callbacks=[]}EDOObject.prototype.__convertToJSValue=function(parameter){if(typeof parameter===\"function\"){var callback=new _EDO_Callback(parameter);this.__callbacks.push(callback);callback._meta_class.idx=this.__callbacks.length-1;return callback}return parameter};EDOObject.prototype.__invokeCallback=function(idx,args){if(this.__callbacks[idx]){this.__callbacks[idx].func.apply(this,args)}};return EDOObject}());"];
-    [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull classKey, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
-        NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){var _this = _super.call(this) || this;if(arguments[0]instanceof _EDO_MetaClass){_this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(_this.__convertToJSValue(arguments[key]))}_this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(\"%@\",args,_this)}return _this;}", classKey];
-        NSMutableString *propsScript = [NSMutableString string];
-        [obj.exportedProps enumerateObjectsUsingBlock:^(NSString * _Nonnull propKey, NSUInteger idx, BOOL * _Nonnull stop) {
-            [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:false,configurable:true});",
-             [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
-             propKey,
-             propKey];
+    NSMutableDictionary<NSString *, EDOExportable *> *exportables = self.exportables.mutableCopy;
+    NSMutableSet *exported = [NSMutableSet set];
+    [exported addObject:@"EDOObject"];
+    __block NSInteger exportingLoopCount = 0;
+    while (exportables.count > 0) {
+        exportingLoopCount = 0;
+        [exportables.copy enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull classKey, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
+            if (obj.superName == nil) {
+                [exportables removeObjectForKey:classKey];
+                return;
+            }
+            if (![exported containsObject:obj.superName]) {
+                return;
+            }
+            NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){var _this = _super.call(this, %@) || this;if(arguments[0]instanceof _EDO_MetaClass){_this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(_this.__convertToJSValue(arguments[key]))}_this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(typeof arguments[0] === \"string\" ? arguments[0] : \"%@\",args,_this)}return _this;}", classKey, classKey];
+            NSMutableString *propsScript = [NSMutableString string];
+            [obj.exportedProps enumerateObjectsUsingBlock:^(NSString * _Nonnull propKey, NSUInteger idx, BOOL * _Nonnull stop) {
+                [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:false,configurable:true});",
+                 [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
+                 propKey,
+                 propKey];
+            }];
+            NSMutableString *bindMethodScript = [NSMutableString string];
+            [obj.bindedMethods enumerateObjectsUsingBlock:^(NSString * _Nonnull methodKey, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSString *methodName = [methodKey componentsSeparatedByString:@":"].firstObject;
+                [bindMethodScript appendFormat:@"Initializer.prototype.%@=function(){};Initializer.prototype.__%@=function(){this.%@.apply(this,arguments)};", methodName, methodName, methodName];
+            }];
+            NSMutableString *exportMethodScript = [NSMutableString string];
+            [obj.exportedMethods enumerateObjectsUsingBlock:^(NSString * _Nonnull methodKey, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSString *methodName = [methodKey componentsSeparatedByString:@":"].firstObject;
+                [exportMethodScript appendFormat:@"Initializer.prototype.%@ = function () {var args=[];for(var key in arguments){args.push(this.__convertToJSValue(arguments[key]))}return ENDO.callMethodWithNameArgumentsOwner(\"%@\", args, this);};",
+                 [methodName stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
+                 methodKey];
+            }];
+            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@ ;return Initializer; }(%@));",
+                                     classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, obj.superName];
+            [script appendString:clazzScript];
+            [exported addObject:obj.name];
+            [exportables removeObjectForKey:classKey];
+            exportingLoopCount++;
         }];
-        NSMutableString *bindMethodScript = [NSMutableString string];
-        [obj.bindedMethods enumerateObjectsUsingBlock:^(NSString * _Nonnull methodKey, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *methodName = [methodKey componentsSeparatedByString:@":"].firstObject;
-            [bindMethodScript appendFormat:@"Initializer.prototype.%@=function(){};Initializer.prototype.__%@=function(){this.%@.apply(this,arguments)};", methodName, methodName, methodName];
-        }];
-        NSMutableString *exportMethodScript = [NSMutableString string];
-        [obj.exportedMethods enumerateObjectsUsingBlock:^(NSString * _Nonnull methodKey, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *methodName = [methodKey componentsSeparatedByString:@":"].firstObject;
-            [exportMethodScript appendFormat:@"Initializer.prototype.%@ = function () {var args=[];for(var key in arguments){args.push(this.__convertToJSValue(arguments[key]))}return ENDO.callMethodWithNameArgumentsOwner(\"%@\", args, this);};",
-             [methodName stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
-             methodKey];
-        }];
-        NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@ ;return Initializer; }(EDOObject));",
-                                 classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript];
-        [script appendString:clazzScript];
-    }];
+        NSAssert(exportingLoopCount > 0, @"Did you forgot to export some class superClass?");
+    }
     context[@"ENDO"] = [EDOExporter sharedExporter];
     [context evaluateScript:script];
 }
 
-- (void)exportClass:(Class)clazz name:(NSString *)name {
+- (void)exportClass:(Class)clazz name:(NSString *)name superName:(NSString *)superName {
     EDOExportable *exportable = [[EDOExportable alloc] init];
     exportable.clazz = clazz;
     exportable.name = name;
+    exportable.superName = superName ?: @"EDOObject";
     NSMutableDictionary *mutableExportables = [self.exportables mutableCopy];
     [mutableExportables setObject:exportable forKey:name];
     self.exportables = mutableExportables.copy;
@@ -233,6 +252,8 @@
 }
 
 - (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)jsArguments owner:(JSValue *)owner {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     NSArray *arguments = [EDOObjectTransfer convertToNSArgumentsWithJSArguments:jsArguments owner:owner];
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     SEL selector = NSSelectorFromString(name);
@@ -253,6 +274,7 @@
             }
         } @catch (NSException *exception) { } @finally { }
     }
+#pragma clang diagnostic pop
     return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
 }
 

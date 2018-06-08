@@ -13,7 +13,7 @@
 @implementation UIView (EDOExporting)
 
 + (void)load {
-    EDO_EXPORT_CLASS(@"UIView");
+    EDO_EXPORT_CLASS(@"UIView", nil);
     EDO_EXPORT_INITIALIZER({
         return [[UIView alloc] initWithFrame:CGRectZero];
     });

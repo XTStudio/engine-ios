@@ -12,7 +12,7 @@
 @implementation UIColor (EDOExporting)
 
 + (void)load {
-    EDO_EXPORT_CLASS(@"UIColor");
+    EDO_EXPORT_CLASS(@"UIColor", nil);
     EDO_EXPORT_INITIALIZER({
         if (arguments.count >= 4) {
             return [UIColor colorWithRed:[arguments[0] floatValue]
