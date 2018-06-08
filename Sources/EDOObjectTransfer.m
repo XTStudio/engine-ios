@@ -12,27 +12,27 @@
 
 @implementation EDOObjectTransfer
 
-+ (JSValue *)convertToJSValueWithObject:(NSObject *)anObject {
++ (JSValue *)convertToJSValueWithObject:(NSObject *)anObject context:(JSContext *)context {
     if ([anObject isKindOfClass:[NSString class]] || [anObject isKindOfClass:[NSNumber class]]) {
         return (JSValue *)anObject;
     }
     else if ([anObject isKindOfClass:[NSDictionary class]]) {
-        return (JSValue *)[self convertToJSDictionaryWithNSArguments:(NSDictionary *)anObject];
+        return (JSValue *)[self convertToJSDictionaryWithNSArguments:(NSDictionary *)anObject context:context];
     }
     else if ([anObject isKindOfClass:[NSArray class]]) {
-        return (JSValue *)[self convertToJSArgumentsWithNSArguments:(NSArray *)anObject];
+        return (JSValue *)[self convertToJSArgumentsWithNSArguments:(NSArray *)anObject context:context];
     }
     else if ([anObject isKindOfClass:[NSValue class]]) {
         NSValue *nsValue = (id)anObject;
         NSString *objcType = [NSString stringWithUTF8String:[nsValue objCType]];
         if ([objcType hasPrefix:@"{CGRect"]) {
-            return [JSValue valueWithRect:[nsValue CGRectValue] inContext:[JSContext currentContext]];
+            return [JSValue valueWithRect:[nsValue CGRectValue] inContext:context ?: [JSContext currentContext]];
         }
         else if ([objcType hasPrefix:@"{CGSize"]) {
-            return [JSValue valueWithSize:[nsValue CGSizeValue] inContext:[JSContext currentContext]];
+            return [JSValue valueWithSize:[nsValue CGSizeValue] inContext:context ?: [JSContext currentContext]];
         }
         else if ([objcType hasPrefix:@"{CGPoint"]) {
-            return [JSValue valueWithPoint:[nsValue CGPointValue] inContext:[JSContext currentContext]];
+            return [JSValue valueWithPoint:[nsValue CGPointValue] inContext:context ?: [JSContext currentContext]];
         }
         else if ([objcType hasPrefix:@"{CGAffineTransform"]) {
             CGAffineTransform transform = [nsValue CGAffineTransformValue];
@@ -46,13 +46,13 @@
     else {
         return [[EDOExporter sharedExporter] scriptObjectWithObject:anObject];
     }
-    return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+    return [JSValue valueWithUndefinedInContext:context ?: [JSContext currentContext]];
 }
 
-+ (NSDictionary *)convertToJSDictionaryWithNSArguments:(NSDictionary *)nsDictionary {
++ (NSDictionary *)convertToJSDictionaryWithNSArguments:(NSDictionary *)nsDictionary context:(JSContext *)context {
     NSMutableDictionary *jsDictionary = [NSMutableDictionary dictionary];
     for (id aKey in nsDictionary) {
-        id value = [self convertToJSValueWithObject:nsDictionary[aKey]];
+        id value = [self convertToJSValueWithObject:nsDictionary[aKey] context:context];
         if (value != nil) {
             [jsDictionary setObject:value forKey:aKey];
         }
@@ -60,19 +60,19 @@
     return jsDictionary.copy;
 }
 
-+ (NSArray *)convertToJSArgumentsWithNSArguments:(NSArray *)nsArguments {
++ (NSArray *)convertToJSArgumentsWithNSArguments:(NSArray *)nsArguments context:(JSContext *)context {
     NSMutableArray *jsArguments = [NSMutableArray array];
     for (id argument in nsArguments) {
-        [jsArguments addObject:[self convertToJSValueWithObject:argument] ?: [JSValue valueWithUndefinedInContext:[JSContext currentContext]] ?: [NSNull null]];
+        [jsArguments addObject:[self convertToJSValueWithObject:argument context:context] ?: [JSValue valueWithUndefinedInContext:context ?: [JSContext currentContext]] ?: [NSNull null]];
     }
     return jsArguments.copy;
 }
 
-+ (id)convertToNSValueWithJSValue:(JSValue *)anValue {
-    return [self convertToNSValueWithJSValue:anValue eageringType:nil];
++ (id)convertToNSValueWithJSValue:(JSValue *)anValue owner:(JSValue *)owner {
+    return [self convertToNSValueWithJSValue:anValue eageringType:nil owner:owner];
 }
 
-+ (id)convertToNSValueWithJSValue:(JSValue *)anValue eageringType:(NSString *)eageringType {
++ (id)convertToNSValueWithJSValue:(JSValue *)anValue eageringType:(NSString *)eageringType owner:(JSValue *)owner {
     if ([eageringType hasPrefix:@"{CGRect"]) {
         return [NSValue valueWithCGRect:[anValue toRect]];
     }
@@ -107,38 +107,53 @@
             }
         }
         else {
-            return [self convertToNSDictionaryWithJSDictionary:anValue.toDictionary];
+            return [self convertToNSDictionaryWithJSDictionary:anValue.toDictionary owner:owner];
         }
     }
     else if (anValue.isArray) {
-        return [self convertToNSArgumentsWithJSArguments:anValue.toArray];
+        return [self convertToNSArgumentsWithJSArguments:anValue.toArray owner:owner];
     }
     return nil;
 }
 
-+ (id)convertToNSValueWithPlainValue:(id)plainValue {
++ (id)convertToNSValueWithPlainValue:(id)plainValue owner:(JSValue *)owner {
     if ([plainValue isKindOfClass:[NSString class]] || [plainValue isKindOfClass:[NSNumber class]]) {
         return plainValue;
     }
     else if ([plainValue isKindOfClass:[NSArray class]]) {
-        return [self convertToNSArgumentsWithJSArguments:plainValue];
+        return [self convertToNSArgumentsWithJSArguments:plainValue owner:owner];
     }
     else if ([plainValue isKindOfClass:[NSDictionary class]]) {
         NSDictionary *metaClassInfo = plainValue[@"_meta_class"];
-        if ([metaClassInfo[@"objectRef"] isKindOfClass:[NSString class]]) {
+        if ([metaClassInfo[@"classname"] isKindOfClass:[NSString class]] &&
+            [metaClassInfo[@"classname"] isEqualToString:@"__Function"]) {
+            JSManagedValue *managedValue = [JSManagedValue managedValueWithValue:owner];
+            NSNumber *idx = metaClassInfo[@"idx"];
+            return ^(NSArray *nsArguments){
+                JSValue *owner = [managedValue value];
+                if (owner != nil) {
+                    [owner invokeMethod:@"__invokeCallback" withArguments:@[
+                                                                            idx ?: @(-1),
+                                                                            [self convertToJSArgumentsWithNSArguments:nsArguments
+                                                                                                              context:owner.context]
+                                                                            ]];
+                }
+            };
+        }
+        else if ([metaClassInfo[@"objectRef"] isKindOfClass:[NSString class]]) {
             return [[EDOExporter sharedExporter] nsValueWithObjectRef:metaClassInfo[@"objectRef"]];
         }
         else {
-            return [self convertToNSDictionaryWithJSDictionary:plainValue] ?: plainValue;
+            return [self convertToNSDictionaryWithJSDictionary:plainValue owner:owner] ?: plainValue;
         }
     }
     return nil;
 }
 
-+ (NSDictionary *)convertToNSDictionaryWithJSDictionary:(NSDictionary *)jsDictionary {
++ (NSDictionary *)convertToNSDictionaryWithJSDictionary:(NSDictionary *)jsDictionary owner:(JSValue *)owner {
     NSMutableDictionary *nsDictionary = [NSMutableDictionary dictionary];
     for (NSString *aKey in jsDictionary) {
-        id value = [self convertToNSValueWithPlainValue:jsDictionary[aKey]];
+        id value = [self convertToNSValueWithPlainValue:jsDictionary[aKey] owner:owner];
         if (value != nil) {
             [nsDictionary setObject:value forKey:aKey];
         }
@@ -146,10 +161,10 @@
     return nsDictionary.copy;
 }
 
-+ (NSArray *)convertToNSArgumentsWithJSArguments:(NSArray *)jsArguments {
++ (NSArray *)convertToNSArgumentsWithJSArguments:(NSArray *)jsArguments owner:(JSValue *)owner {
     NSMutableArray *nsArguments = [NSMutableArray array];
     for (id argument in jsArguments) {
-        [nsArguments addObject:[self convertToNSValueWithPlainValue:argument] ?: [NSNull null]];
+        [nsArguments addObject:[self convertToNSValueWithPlainValue:argument owner:owner] ?: [NSNull null]];
     }
     return nsArguments.copy;
 }

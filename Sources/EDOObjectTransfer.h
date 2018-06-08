@@ -12,18 +12,18 @@
 
 @interface EDOObjectTransfer : NSObject
 
-+ (JSValue *)convertToJSValueWithObject:(NSObject *)anObject;
++ (JSValue *)convertToJSValueWithObject:(NSObject *)anObject context:(JSContext *)context;
 
-+ (NSDictionary *)convertToJSDictionaryWithNSArguments:(NSDictionary *)nsDictionary;
++ (NSDictionary *)convertToJSDictionaryWithNSArguments:(NSDictionary *)nsDictionary context:(JSContext *)context;
 
-+ (NSArray *)convertToJSArgumentsWithNSArguments:(NSArray *)nsArguments;
++ (NSArray *)convertToJSArgumentsWithNSArguments:(NSArray *)nsArguments context:(JSContext *)context;
 
-+ (id)convertToNSValueWithJSValue:(JSValue *)anValue;
++ (id)convertToNSValueWithJSValue:(JSValue *)anValue owner:(JSValue *)owner;
 
-+ (id)convertToNSValueWithJSValue:(JSValue *)anValue eageringType:(NSString *)eageringType;
++ (id)convertToNSValueWithJSValue:(JSValue *)anValue eageringType:(NSString *)eageringType owner:(JSValue *)owner;
 
-+ (NSDictionary *)convertToNSDictionaryWithJSDictionary:(NSDictionary *)jsDictionary;
++ (NSDictionary *)convertToNSDictionaryWithJSDictionary:(NSDictionary *)jsDictionary owner:(JSValue *)owner;
 
-+ (NSArray *)convertToNSArgumentsWithJSArguments:(NSArray *)jsArguments;
++ (NSArray *)convertToNSArgumentsWithJSArguments:(NSArray *)jsArguments owner:(JSValue *)owner;
 
 @end

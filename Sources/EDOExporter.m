@@ -85,12 +85,12 @@
 
 - (void)exportWithContext:(JSContext *)context {
     NSMutableString *script = [NSMutableString string];
-    [script appendString:@"var _EDO_MetaClass = /** @class */ (function () { function _EDO_MetaClass(classname, objectRef) { this.classname = classname; this.objectRef = objectRef; } return _EDO_MetaClass; }());"];
+    [script appendString:@"var __extends=(this&&this.__extends)||(function(){var extendStatics=Object.setPrototypeOf||({__proto__:[]}instanceof Array&&function(d,b){d.__proto__=b})||function(d,b){for(var p in b)if(b.hasOwnProperty(p))d[p]=b[p]};return function(d,b){extendStatics(d,b);function __(){this.constructor=d}d.prototype=b===null?Object.create(b):(__.prototype=b.prototype,new __())}})();var _EDO_MetaClass = /** @class */ (function () { function _EDO_MetaClass(classname, objectRef) { this.classname = classname; this.objectRef = objectRef; } return _EDO_MetaClass; }());var _EDO_Callback=(function(){function _EDO_Callback(func){this.func=func;this._meta_class={classname:\"__Function\"}}return _EDO_Callback}());var EDOObject=(function(){function EDOObject(){this.__callbacks=[]}EDOObject.prototype.__convertToJSValue=function(parameter){if(typeof parameter===\"function\"){var callback=new _EDO_Callback(parameter);this.__callbacks.push(callback);callback._meta_class.idx=this.__callbacks.length-1;return callback}return parameter};EDOObject.prototype.__invokeCallback=function(idx,args){if(this.__callbacks[idx]){this.__callbacks[idx].func.apply(this,args)}};return EDOObject}());"];
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull classKey, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
-        NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){if(arguments[0]instanceof _EDO_MetaClass){this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(arguments[key])}this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(\"%@\",args,this)}}", classKey];
+        NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){var _this = _super.call(this) || this;if(arguments[0]instanceof _EDO_MetaClass){_this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(_this.__convertToJSValue(arguments[key]))}_this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(\"%@\",args,_this)}return _this;}", classKey];
         NSMutableString *propsScript = [NSMutableString string];
         [obj.exportedProps enumerateObjectsUsingBlock:^(NSString * _Nonnull propKey, NSUInteger idx, BOOL * _Nonnull stop) {
-            [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:true,configurable:true});",
+            [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:false,configurable:true});",
              [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
              propKey,
              propKey];
@@ -103,11 +103,11 @@
         NSMutableString *exportMethodScript = [NSMutableString string];
         [obj.exportedMethods enumerateObjectsUsingBlock:^(NSString * _Nonnull methodKey, NSUInteger idx, BOOL * _Nonnull stop) {
             NSString *methodName = [methodKey componentsSeparatedByString:@":"].firstObject;
-            [exportMethodScript appendFormat:@"Initializer.prototype.%@ = function () {return ENDO.callMethodWithNameArgumentsMetaClass(\"%@\", arguments, this._meta_class);};",
+            [exportMethodScript appendFormat:@"Initializer.prototype.%@ = function () {var args=[];for(var key in arguments){args.push(this.__convertToJSValue(arguments[key]))}return ENDO.callMethodWithNameArgumentsOwner(\"%@\", args, this);};",
              [methodName stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
              methodKey];
         }];
-        NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function () { ;%@ ;%@ ;%@ ;%@ ;return Initializer; }());",
+        NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@ ;return Initializer; }(EDOObject));",
                                  classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript];
         [script appendString:clazzScript];
     }];
@@ -209,54 +209,50 @@
 }
 
 - (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner {
-    NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner];
+    NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
         @try {
             id returnValue = [ownerObject valueForKey:name];
-            return [EDOObjectTransfer convertToJSValueWithObject:returnValue];
+            return [EDOObjectTransfer convertToJSValueWithObject:returnValue context:owner.context];
         } @catch (NSException *exception) { } @finally { }
     }
     return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
 }
 
 - (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value owner:(JSValue *)owner {
-    NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner];
+    NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
         @try {
             char ret[256];
             method_getReturnType(class_getInstanceMethod(ownerObject.class, NSSelectorFromString(name)), ret, 256);
-            [ownerObject setValue:[EDOObjectTransfer convertToNSValueWithJSValue:value eageringType:[NSString stringWithUTF8String:ret]] forKey:name];
+            [ownerObject setValue:[EDOObjectTransfer convertToNSValueWithJSValue:value
+                                                                    eageringType:[NSString stringWithUTF8String:ret]
+                                                                           owner:owner] forKey:name];
         } @catch (NSException *exception) { } @finally { }
     }
 }
 
-- (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)jsArguments metaClass:(JSValue *)metaClass {
-    NSArray *arguments = [EDOObjectTransfer convertToNSArgumentsWithJSArguments:jsArguments];
-    @try {
-        NSString *objectRef = [metaClass toDictionary][@"objectRef"];
-        if ([objectRef isKindOfClass:[NSString class]]) {
-            EDOObjectReference *weakRef = self.references[objectRef];
-            if ([weakRef isKindOfClass:[EDOObjectReference class]]) {
-                NSObject *anObject = weakRef.value;
-                SEL selector = NSSelectorFromString(name);
-                if ([anObject isKindOfClass:[NSObject class]]) {
-                    char ret[256];
-                    method_getReturnType(class_getInstanceMethod(anObject.class, selector), ret, 256);
-                    if (strcmp(ret, "v") == 0) {
-                        [anObject performSelector:NSSelectorFromString(name)
-                                       withObject:0 < arguments.count && arguments[0] != [NSNull null] ? arguments[0] : nil
-                                       withObject:1 < arguments.count && arguments[1] != [NSNull null] ? arguments[1] : nil];
-                    }
-                    else {
-                        id returnValue = [anObject performSelector:NSSelectorFromString(name)
-                                                        withObject:0 < arguments.count && arguments[0] != [NSNull null] ? arguments[0] : nil
-                                                        withObject:1 < arguments.count && arguments[1] != [NSNull null] ? arguments[1] : nil];
-                        return [EDOObjectTransfer convertToJSValueWithObject:returnValue];
-                    }
-                }
+- (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)jsArguments owner:(JSValue *)owner {
+    NSArray *arguments = [EDOObjectTransfer convertToNSArgumentsWithJSArguments:jsArguments owner:owner];
+    NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
+    SEL selector = NSSelectorFromString(name);
+    if ([ownerObject isKindOfClass:[NSObject class]]) {
+        @try {
+            char ret[256];
+            method_getReturnType(class_getInstanceMethod(ownerObject.class, selector), ret, 256);
+            if (strcmp(ret, "v") == 0) {
+                [ownerObject performSelector:selector
+                                  withObject:0 < arguments.count && arguments[0] != [NSNull null] ? arguments[0] : nil
+                                  withObject:1 < arguments.count && arguments[1] != [NSNull null] ? arguments[1] : nil];
             }
-        }
-    } @catch (NSException *exception) { } @finally { }
+            else {
+                id returnValue = [ownerObject performSelector:selector
+                                                   withObject:0 < arguments.count && arguments[0] != [NSNull null] ? arguments[0] : nil
+                                                   withObject:1 < arguments.count && arguments[1] != [NSNull null] ? arguments[1] : nil];
+                return [EDOObjectTransfer convertToJSValueWithObject:returnValue context:owner.context];
+            }
+        } @catch (NSException *exception) { } @finally { }
+    }
     return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
 }
 

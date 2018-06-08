@@ -30,12 +30,19 @@
     EDO_BIND_METHOD(layoutSubviews);
     EDO_EXPORT_METHOD(removeFromSuperview);
     EDO_EXPORT_METHOD(addSubview:);
+    EDO_EXPORT_METHOD(sss:);
     [self aspect_hookSelector:@selector(didAddSubview:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo, UIView *subview) {
         EDO_RETAIN(subview);
     } error:NULL];
     [self aspect_hookSelector:@selector(willRemoveSubview:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo, UIView *subview) {
         EDO_RELEASE(subview);
     } error:NULL];
+}
+
+- (void)sss:(void (^)(NSArray *))callback {
+    if (callback) {
+        callback(nil);
+    }
 }
 
 @end

@@ -17,7 +17,6 @@
 		90FA924C20C66B790096ED9D /* NSObject+EDOObjectRef.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA924B20C66B790096ED9D /* NSObject+EDOObjectRef.m */; };
 		90FA924F20C66D2F0096ED9D /* EDOExportable.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA924E20C66D2F0096ED9D /* EDOExportable.m */; };
 		90FA925320C66F6B0096ED9D /* UIView+EDOExporting.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925220C66F6B0096ED9D /* UIView+EDOExporting.m */; };
-		90FA925620C693410096ED9D /* EDOStructValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925520C693410096ED9D /* EDOStructValue.m */; };
 		90FA925920C781700096ED9D /* EDOObjectTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925820C781700096ED9D /* EDOObjectTransfer.m */; };
 		90FA925C20C7E03A0096ED9D /* UIColor+EDOExporting.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925B20C7E03A0096ED9D /* UIColor+EDOExporting.m */; };
 		933BAA0EDCEAB8443DD783AD /* libPods-Endo-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */; };
@@ -44,8 +43,6 @@
 		90FA924E20C66D2F0096ED9D /* EDOExportable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDOExportable.m; sourceTree = "<group>"; };
 		90FA925120C66F6B0096ED9D /* UIView+EDOExporting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+EDOExporting.h"; sourceTree = "<group>"; };
 		90FA925220C66F6B0096ED9D /* UIView+EDOExporting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+EDOExporting.m"; sourceTree = "<group>"; };
-		90FA925420C693410096ED9D /* EDOStructValue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDOStructValue.h; sourceTree = "<group>"; };
-		90FA925520C693410096ED9D /* EDOStructValue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDOStructValue.m; sourceTree = "<group>"; };
 		90FA925720C781700096ED9D /* EDOObjectTransfer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDOObjectTransfer.h; sourceTree = "<group>"; };
 		90FA925820C781700096ED9D /* EDOObjectTransfer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDOObjectTransfer.m; sourceTree = "<group>"; };
 		90FA925A20C7E03A0096ED9D /* UIColor+EDOExporting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+EDOExporting.h"; sourceTree = "<group>"; };
@@ -119,8 +116,6 @@
 				90FA924E20C66D2F0096ED9D /* EDOExportable.m */,
 				90FA925720C781700096ED9D /* EDOObjectTransfer.h */,
 				90FA925820C781700096ED9D /* EDOObjectTransfer.m */,
-				90FA925420C693410096ED9D /* EDOStructValue.h */,
-				90FA925520C693410096ED9D /* EDOStructValue.m */,
 				90FA924A20C66B790096ED9D /* NSObject+EDOObjectRef.h */,
 				90FA924B20C66B790096ED9D /* NSObject+EDOObjectRef.m */,
 			);
@@ -276,7 +271,6 @@
 				90FA925920C781700096ED9D /* EDOObjectTransfer.m in Sources */,
 				90FA923E20C667EE0096ED9D /* main.m in Sources */,
 				90FA925320C66F6B0096ED9D /* UIView+EDOExporting.m in Sources */,
-				90FA925620C693410096ED9D /* EDOStructValue.m in Sources */,
 				90FA925C20C7E03A0096ED9D /* UIColor+EDOExporting.m in Sources */,
 				90FA924F20C66D2F0096ED9D /* EDOExportable.m in Sources */,
 				90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */,

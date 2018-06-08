@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
-#import "EDOStructValue.h"
 
 typedef id(^EDOInitializer)(NSArray *arguments);
 
@@ -25,7 +24,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (NSString *)createInstanceWithName:(NSString *)name arguments:(NSArray *)arguments owner:(JSValue *)owner;
 - (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner;
 - (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value owner:(JSValue *)owner;
-- (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)arguments metaClass:(JSValue *)metaClass;
+- (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)arguments owner:(JSValue *)owner;
 
 @end
 
