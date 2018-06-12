@@ -14,7 +14,7 @@
 
 + (JSValue *)convertToJSValueWithObject:(NSObject *)anObject context:(JSContext *)context;
 
-+ (NSDictionary *)convertToJSDictionaryWithNSArguments:(NSDictionary *)nsDictionary context:(JSContext *)context;
++ (NSDictionary *)convertToJSDictionaryWithNSDictionary:(NSDictionary *)nsDictionary context:(JSContext *)context;
 
 + (NSArray *)convertToJSArgumentsWithNSArguments:(NSArray *)nsArguments context:(JSContext *)context;
 

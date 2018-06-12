@@ -17,7 +17,7 @@
         return (JSValue *)anObject;
     }
     else if ([anObject isKindOfClass:[NSDictionary class]]) {
-        return (JSValue *)[self convertToJSDictionaryWithNSArguments:(NSDictionary *)anObject context:context];
+        return (JSValue *)[self convertToJSDictionaryWithNSDictionary:(NSDictionary *)anObject context:context];
     }
     else if ([anObject isKindOfClass:[NSArray class]]) {
         return (JSValue *)[self convertToJSArgumentsWithNSArguments:(NSArray *)anObject context:context];
@@ -49,7 +49,7 @@
     return [JSValue valueWithUndefinedInContext:context ?: [JSContext currentContext]];
 }
 
-+ (NSDictionary *)convertToJSDictionaryWithNSArguments:(NSDictionary *)nsDictionary context:(JSContext *)context {
++ (NSDictionary *)convertToJSDictionaryWithNSDictionary:(NSDictionary *)nsDictionary context:(JSContext *)context {
     NSMutableDictionary *jsDictionary = [NSMutableDictionary dictionary];
     for (id aKey in nsDictionary) {
         id value = [self convertToJSValueWithObject:nsDictionary[aKey] context:context];
