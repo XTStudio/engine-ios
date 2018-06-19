@@ -180,7 +180,7 @@
             if ([target edo_objectRef] != nil) {
                 JSValue *scriptObject = self.scriptObjects[target.edo_objectRef].value;
                 if (scriptObject != nil) {
-                    [scriptObject invokeMethod:[NSString stringWithFormat:@"__%@", [[NSStringFromSelector(aspectInfo.originalInvocation.selector) componentsSeparatedByString:@":"] firstObject]]
+                    [scriptObject invokeMethod:[NSString stringWithFormat:@"__%@", [[selectorName componentsSeparatedByString:@":"] firstObject]]
                                  withArguments:@[]];
                 }
             }
