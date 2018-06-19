@@ -271,8 +271,6 @@
 }
 
 - (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)jsArguments owner:(JSValue *)owner {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     NSArray *arguments = [EDOObjectTransfer convertToNSArgumentsWithJSArguments:jsArguments owner:owner];
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     SEL selector = NSSelectorFromString(name);
@@ -280,20 +278,71 @@
         @try {
             char ret[256];
             method_getReturnType(class_getInstanceMethod(ownerObject.class, selector), ret, 256);
-            if (strcmp(ret, "v") == 0) {
-                [ownerObject performSelector:selector
-                                  withObject:0 < arguments.count && arguments[0] != [NSNull null] ? arguments[0] : nil
-                                  withObject:1 < arguments.count && arguments[1] != [NSNull null] ? arguments[1] : nil];
-            }
-            else {
-                id returnValue = [ownerObject performSelector:selector
-                                                   withObject:0 < arguments.count && arguments[0] != [NSNull null] ? arguments[0] : nil
-                                                   withObject:1 < arguments.count && arguments[1] != [NSNull null] ? arguments[1] : nil];
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[ownerObject methodSignatureForSelector:selector]];
+            [invocation setTarget:ownerObject];
+            [invocation setSelector:selector];
+            [arguments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                char argumentType[256] = {};
+                method_getArgumentType(class_getInstanceMethod([ownerObject class], selector), (unsigned int)(idx + 2), argumentType, 256);
+                if (strcmp(argumentType, "@") == 0) {
+                    [invocation setArgument:&obj atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "i") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    int argument = [obj intValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "s") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    short argument = [obj shortValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "l") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    long argument = [obj longValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "q") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    long long argument = [obj longLongValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "I") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    unsigned int argument = [obj unsignedIntValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "S") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    unsigned short argument = [obj unsignedShortValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "L") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    unsigned long argument = [obj unsignedLongValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "Q") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    unsigned long long argument = [obj unsignedLongLongValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "f") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    float argument = [obj floatValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "d") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    double argument = [obj doubleValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else if (strcmp(argumentType, "B") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+                    bool argument = [obj boolValue];
+                    [invocation setArgument:&argument atIndex:idx + 2];
+                }
+                else {
+                    [invocation setArgument:&obj atIndex:idx + 2];
+                }
+            }];
+            [invocation invoke];
+            if (strcmp(ret, "v") != 0) {
+                id returnValue;
+                [invocation getReturnValue:&returnValue];
                 return [EDOObjectTransfer convertToJSValueWithObject:returnValue context:owner.context];
             }
         } @catch (NSException *exception) { } @finally { }
     }
-#pragma clang diagnostic pop
     return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
 }
 
