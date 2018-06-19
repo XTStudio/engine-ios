@@ -119,8 +119,12 @@
                  jsName,
                  methodSelector];
             }];
-            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@ ;return Initializer; }(%@));",
-                                     classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, obj.superName];
+            NSMutableString *exportedScript = [NSMutableString string];
+            [obj.exportedScripts enumerateObjectsUsingBlock:^(NSString * _Nonnull script, NSUInteger idx, BOOL * _Nonnull stop) {
+                [bindMethodScript appendString:script];
+            }];
+            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@; %@ ;return Initializer; }(%@));",
+                                     classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, exportedScript, obj.superName];
             [script appendString:clazzScript];
             [exported addObject:obj.name];
             [exportables removeObjectForKey:classKey];
@@ -218,6 +222,18 @@
                 exportedMethods[selectorName] = jsName.copy;
             }
             obj.exportedMethods = exportedMethods.copy;
+        }
+    }];
+}
+
+- (void)exportScriptToJavaScript:(Class)clazz script:(NSString *)script {
+    [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
+        if (obj.clazz == clazz) {
+            NSMutableArray *exportedScripts = (obj.exportedScripts ?: @[]).mutableCopy;
+            if (![exportedScripts containsObject:script]) {
+                [exportedScripts addObject:script];
+            }
+            obj.exportedScripts = exportedScripts.copy;
         }
     }];
 }

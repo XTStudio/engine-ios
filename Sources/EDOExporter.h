@@ -17,6 +17,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 #define EDO_BIND_METHOD(A) [[EDOExporter sharedExporter] bindMethodToJavaScript:[self class] selector:@selector(A)];
 #define EDO_EXPORT_METHOD(A) [[EDOExporter sharedExporter] exportMethodToJavaScript:[self class] selector:@selector(A)];
 #define EDO_EXPORT_METHOD_ALIAS(A, B) [[EDOExporter sharedExporter] exportMethodToJavaScript:[self class] selector:@selector(A) jsName:B];
+#define EDO_EXPORT_SCRIPT(A) [[EDOExporter sharedExporter] exportScriptToJavaScript:[self class] script:A];
 #define EDO_RETAIN(A) [[EDOExporter sharedExporter] retain:A];
 #define EDO_RELEASE(A) [[EDOExporter sharedExporter] release:A];
 
@@ -40,6 +41,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (void)bindMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;
 - (void)exportMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;
 - (void)exportMethodToJavaScript:(Class)clazz selector:(SEL)aSelector jsName:(NSString *)jsName;
+- (void)exportScriptToJavaScript:(Class)clazz script:(NSString *)script;
 - (nullable id)nsValueWithJSValue:(JSValue *)value;
 - (nullable id)nsValueWithObjectRef:(nonnull NSString *)objectRef;
 - (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject;
