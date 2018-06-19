@@ -114,11 +114,10 @@
                 [bindMethodScript appendFormat:@"Initializer.prototype.%@=function(){};Initializer.prototype.__%@=function(){this.%@.apply(this,arguments)};", methodName, methodName, methodName];
             }];
             NSMutableString *exportMethodScript = [NSMutableString string];
-            [obj.exportedMethods enumerateObjectsUsingBlock:^(NSString * _Nonnull methodKey, NSUInteger idx, BOOL * _Nonnull stop) {
-                NSString *methodName = [methodKey componentsSeparatedByString:@":"].firstObject;
+            [obj.exportedMethods enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull methodSelector, NSString * _Nonnull jsName, BOOL * _Nonnull stop) {
                 [exportMethodScript appendFormat:@"Initializer.prototype.%@ = function () {var args=[];for(var key in arguments){args.push(this.__convertToJSValue(arguments[key]))}return ENDO.callMethodWithNameArgumentsOwner(\"%@\", args, this);};",
-                 [methodName stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
-                 methodKey];
+                 jsName,
+                 methodSelector];
             }];
             NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@ ;return Initializer; }(%@));",
                                      classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, obj.superName];
@@ -167,7 +166,7 @@
     NSString *selectorName = NSStringFromSelector(aSelector);
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
         if (obj.clazz == clazz) {
-            NSAssert(![obj.exportedMethods containsObject:selectorName], @"Can not bindMethod while it has been exported before.");
+            NSAssert(obj.exportedMethods[selectorName] == nil, @"Can not bindMethod while it has been exported before.");
             NSMutableArray *bindedMethods = (obj.bindedMethods ?: @[]).mutableCopy;
             if (![bindedMethods containsObject:selectorName]) {
                 [bindedMethods addObject:selectorName];
@@ -190,13 +189,33 @@
 }
 
 - (void)exportMethodToJavaScript:(Class)clazz selector:(SEL)aSelector {
+    [self exportMethodToJavaScript:clazz selector:aSelector jsName:nil];
+}
+
+- (void)exportMethodToJavaScript:(Class)clazz selector:(SEL)aSelector jsName:(NSString *)jsName {
     NSString *selectorName = NSStringFromSelector(aSelector);
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
         if (obj.clazz == clazz) {
             NSAssert(![obj.bindedMethods containsObject:selectorName], @"Can not exportMethod while it has been binded before.");
-            NSMutableArray *exportedMethods = (obj.exportedMethods ?: @[]).mutableCopy;
-            if (![exportedMethods containsObject:selectorName]) {
-                [exportedMethods addObject:selectorName];
+            NSMutableDictionary *exportedMethods = (obj.exportedMethods ?: @{}).mutableCopy;
+            if (jsName != nil) {
+                exportedMethods[selectorName] = jsName;
+            }
+            else {
+                NSArray *components = [[selectorName stringByReplacingOccurrencesOfString:@"edo_" withString:@""] componentsSeparatedByString:@":"];
+                NSMutableString *jsName = [NSMutableString string];
+                [components enumerateObjectsUsingBlock:^(NSString * _Nonnull component, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if (component.length < 1) {
+                        return ;
+                    }
+                    if (idx == 0) {
+                        [jsName appendString:component];
+                    }
+                    else {
+                        [jsName appendFormat:@"%@%@", [component substringToIndex:1].uppercaseString, [component substringFromIndex:1]];
+                    }
+                }];
+                exportedMethods[selectorName] = jsName.copy;
             }
             obj.exportedMethods = exportedMethods.copy;
         }

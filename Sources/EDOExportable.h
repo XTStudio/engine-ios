@@ -17,6 +17,6 @@
 @property (nonatomic, copy) EDOInitializer initializer;
 @property (nonatomic, copy) NSArray<NSString *> *exportedProps;
 @property (nonatomic, copy) NSArray<NSString *> *bindedMethods;
-@property (nonatomic, copy) NSArray<NSString *> *exportedMethods;
+@property (nonatomic, copy) NSDictionary<NSString *, NSString *> *exportedMethods;
 
 @end
