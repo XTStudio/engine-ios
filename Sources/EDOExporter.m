@@ -123,8 +123,8 @@
             [obj.exportedScripts enumerateObjectsUsingBlock:^(NSString * _Nonnull script, NSUInteger idx, BOOL * _Nonnull stop) {
                 [bindMethodScript appendString:script];
             }];
-            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@; %@ ;return Initializer; }(%@));",
-                                     classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, exportedScript, obj.superName];
+            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@ ;return Initializer; }(%@));%@;",
+                                     classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, obj.superName, exportedScript];
             [script appendString:clazzScript];
             [exported addObject:obj.name];
             [exportables removeObjectForKey:classKey];
