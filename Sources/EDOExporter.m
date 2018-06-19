@@ -100,7 +100,7 @@
             if (![exported containsObject:obj.superName]) {
                 return;
             }
-            NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){var _this = _super.call(this, %@) || this;if(arguments[0]instanceof _EDO_MetaClass){_this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(_this.__convertToJSValue(arguments[key]))}_this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(typeof arguments[0] === \"string\" ? arguments[0] : \"%@\",args,_this)}return _this;}", classKey, classKey];
+            NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){var _this = _super.call(this, %@) || this;if(arguments[0]instanceof _EDO_MetaClass){_this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(_this.__convertToJSValue(arguments[key]))}_this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(\"%@\",args,_this)}return _this;}", classKey, classKey];
             NSMutableString *propsScript = [NSMutableString string];
             [obj.exportedProps enumerateObjectsUsingBlock:^(NSString * _Nonnull propKey, NSUInteger idx, BOOL * _Nonnull stop) {
                 [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:false,configurable:true});",
@@ -121,10 +121,10 @@
             }];
             NSMutableString *exportedScript = [NSMutableString string];
             [obj.exportedScripts enumerateObjectsUsingBlock:^(NSString * _Nonnull script, NSUInteger idx, BOOL * _Nonnull stop) {
-                [bindMethodScript appendString:script];
+                [exportedScript appendString:script];
             }];
-            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@ ;%@ ;%@ ;%@ ;return Initializer; }(%@));%@;",
-                                     classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, obj.superName, exportedScript];
+            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@;%@;%@;%@;%@;return Initializer; }(%@));",
+                                     classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, exportedScript, obj.superName];
             [script appendString:clazzScript];
             [exported addObject:obj.name];
             [exportables removeObjectForKey:classKey];
