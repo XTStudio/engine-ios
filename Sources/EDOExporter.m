@@ -97,6 +97,13 @@
                 [exportables removeObjectForKey:classKey];
                 return;
             }
+            if ([obj.superName isEqualToString:@"ENUM"]) {
+                [script appendString:obj.exportedScripts.firstObject];
+                [exported addObject:obj.name];
+                [exportables removeObjectForKey:classKey];
+                exportingLoopCount++;
+                return;
+            }
             if (![exported containsObject:obj.superName]) {
                 return;
             }
@@ -134,6 +141,26 @@
     }
     context[@"ENDO"] = [EDOExporter sharedExporter];
     [context evaluateScript:script];
+}
+
+- (void)exportEnum:(NSString *)name values:(NSDictionary *)values {
+    EDOExportable *exportable = [[EDOExportable alloc] init];
+    exportable.name = name;
+    exportable.superName = @"ENUM";
+    NSMutableString *valueScript = [NSMutableString string];
+    [values enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        [valueScript appendFormat:@"%@[%@[\"%@\"] = %@] = \"%@\";", exportable.name, exportable.name, key, obj, key];
+    }];
+    NSString *script = [NSString stringWithFormat:@"var %@;(function (%@) {%@})(%@ || (%@ = {}));",
+                        exportable.name,
+                        exportable.name,
+                        valueScript,
+                        exportable.name,
+                        exportable.name];
+    exportable.exportedScripts = @[script];
+    NSMutableDictionary *mutableExportables = [self.exportables mutableCopy];
+    [mutableExportables setObject:exportable forKey:name];
+    self.exportables = mutableExportables.copy;
 }
 
 - (void)exportClass:(Class)clazz name:(NSString *)name superName:(NSString *)superName {

@@ -36,6 +36,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 + (EDOExporter *)sharedExporter;
 
 - (void)exportWithContext:(nonnull JSContext *)context;
+- (void)exportEnum:(NSString *)name values:(NSDictionary *)values;
 - (void)exportClass:(Class)clazz name:(nonnull NSString *)name superName:(NSString *)superName;
 - (void)exportInitializer:(Class)clazz initializer:(nonnull EDOInitializer)initializer;
 - (void)exportProperty:(Class)clazz propName:(nonnull NSString *)propName;

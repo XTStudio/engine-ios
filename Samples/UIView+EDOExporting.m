@@ -31,16 +31,21 @@
     EDO_EXPORT_METHOD(removeFromSuperview);
     EDO_EXPORT_METHOD(addSubview:);
     EDO_EXPORT_METHOD(insertSubview:atIndex:);
-    EDO_EXPORT_METHOD(sss:);
+    EDO_EXPORT_METHOD_ALIAS(sss:value:, @"sss");
     [self aspect_hookSelector:@selector(didAddSubview:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo, UIView *subview) {
         EDO_RETAIN(subview);
     } error:NULL];
     [self aspect_hookSelector:@selector(willRemoveSubview:) withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo, UIView *subview) {
         EDO_RELEASE(subview);
     } error:NULL];
+    [[EDOExporter sharedExporter] exportEnum:@"UIViewContentMode" values:@{
+                                                                           @"scaleToFill": @(UIViewContentModeScaleToFill),
+                                                                           @"scaleAspectFit": @(UIViewContentModeScaleAspectFit),
+                                                                           @"scaleAspectFill": @(UIViewContentModeScaleAspectFill),
+                                                                           }];
 }
 
-- (void)sss:(void (^)(NSArray *))callback {
+- (void)sss:(void (^)(NSArray *))callback value:(UIViewContentMode)contentMode {
     if (callback) {
         callback(nil);
     }
