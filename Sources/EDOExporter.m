@@ -387,7 +387,7 @@
 }
 
 - (JSValue *)scriptObjectWithObject:(NSObject *)anObject {
-    if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef].value != nil) {
+    if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef] != nil) {
         return self.scriptObjects[anObject.edo_objectRef].value;
     }
     else {
