@@ -426,7 +426,9 @@
             EDOObjectReference *objectReference = self.references[anObject.edo_objectRef];
             if (managedObject != nil && managedObject.value != nil && objectReference != nil) {
                 objectReference.edo_retainCount++;
-                [[managedObject.value.context virtualMachine] addManagedReference:managedObject withOwner:self];
+                if (objectReference.edo_retainCount == 1) {
+                    [managedObject.value.context.virtualMachine addManagedReference:managedObject withOwner:self];
+                }
             }
         }
     }
@@ -440,9 +442,8 @@
             if (managedObject != nil && managedObject.value != nil && objectReference != nil) {
                 objectReference.edo_retainCount--;
                 if (objectReference.edo_retainCount <= 0) {
-                    [[managedObject.value.context virtualMachine] removeManagedReference:managedObject withOwner:self];
+                    [managedObject.value.context.virtualMachine removeManagedReference:managedObject withOwner:self];
                 }
-                
             }
         }
     }
