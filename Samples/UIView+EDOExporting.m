@@ -44,6 +44,9 @@
     if (callback) {
         callback(nil);
     }
+    else {
+        [self edo_emitWithEventName:@"ttt" arguments:nil];
+    }
 }
 
 @end

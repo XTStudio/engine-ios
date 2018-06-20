@@ -12,4 +12,6 @@
 
 @property (nonatomic, strong) NSString *edo_objectRef;
 
+- (void)edo_emitWithEventName:(nonnull NSString *)named arguments:(nullable NSArray *)arguments;
+
 @end
