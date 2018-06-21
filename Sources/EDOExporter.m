@@ -268,9 +268,12 @@
 - (JSValue *)createInstanceWithName:(NSString *)name arguments:(NSArray *)arguments owner:(JSValue *)owner {
     if ([name isKindOfClass:[NSString class]] && self.exportables[name] != nil) {
         NSObject *newInstance = self.exportables[name].initializer != nil ? self.exportables[name].initializer(arguments) : [self.exportables[name].clazz new];
+        if (newInstance == nil) {
+            return [JSValue valueWithUndefinedInContext:owner.context];
+        }
         return [self createMetaClassWithObject:newInstance context:[JSContext currentContext] owner:owner];
     }
-    return nil;
+    return [JSValue valueWithUndefinedInContext:owner.context];
 }
 
 - (JSValue *)createMetaClassWithObject:(NSObject *)anObject context:(JSContext *)context owner:(JSValue *)owner {
