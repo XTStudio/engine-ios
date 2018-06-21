@@ -14,6 +14,7 @@
 @implementation NSObject (EDOObjectRef)
 
 static int edo_objectRef_key;
+static int edo_listeningEvents_key;
 
 - (NSString *)edo_objectRef {
     return objc_getAssociatedObject(self, &edo_objectRef_key);
@@ -23,7 +24,21 @@ static int edo_objectRef_key;
     objc_setAssociatedObject(self, &edo_objectRef_key, edo_objectRef, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (NSSet *)edo_listeningEvents {
+    return objc_getAssociatedObject(self, &edo_listeningEvents_key);
+}
+
+- (void)setEdo_listeningEvents:(NSSet *)edo_listeningEvents {
+    objc_setAssociatedObject(self, &edo_listeningEvents_key, edo_listeningEvents, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (void)edo_emitWithEventName:(NSString *)named arguments:(NSArray *)arguments {
+    if ([self edo_objectRef] == nil) {
+        return;
+    }
+    if (![self.edo_listeningEvents containsObject:named]) {
+        return;
+    }
     JSValue *scripObject = [[EDOExporter sharedExporter] scriptObjectWithObject:self];
     if (scripObject != nil) {
         if (arguments != nil && arguments.count > 0) {

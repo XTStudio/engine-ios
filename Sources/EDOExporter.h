@@ -28,6 +28,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner;
 - (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value owner:(JSValue *)owner;
 - (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)arguments owner:(JSValue *)owner;
+- (void)addListenerWithName:(NSString *)name owner:(JSValue *)owner;
 
 @end
 

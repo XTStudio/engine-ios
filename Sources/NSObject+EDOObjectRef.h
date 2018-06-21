@@ -11,6 +11,7 @@
 @interface NSObject (EDOObjectRef)
 
 @property (nonatomic, strong) NSString *edo_objectRef;
+@property (nonatomic, strong) NSSet *edo_listeningEvents;
 
 - (void)edo_emitWithEventName:(nonnull NSString *)named arguments:(nullable NSArray *)arguments;
 

@@ -24,7 +24,7 @@
         NSLog(@"%@", exception);
     }];
     [[EDOExporter sharedExporter] exportWithContext:ctx];
-    [ctx evaluateScript:@"var s = new UIView; s.backgroundColor = new UIColor(1.0, 1.0, 0.0, 1.0); var slider = new UISlider(); slider.value = 0.5; slider.frame = {x:100,y:100,width:200,height:36}; s.addSubview(slider); s.on('ttt', function(){ emitted() }); s.sss(function(){}, UIViewContentMode.scaleAspectFill); "];
+    [ctx evaluateScript:@"var s = new UIView; s.backgroundColor = new UIColor(1.0, 1.0, 0.0, 1.0); var slider = new UISlider(); slider.value = 0.5; slider.frame = {x:100,y:100,width:200,height:36}; s.addSubview(slider); s.on('ttt', function(){ emitted() }); s.sss(function(){fff()}, UIViewContentMode.scaleAspectFill); "];
     UIView *sView = [[EDOExporter sharedExporter] nsValueWithJSValue:[ctx objectForKeyedSubscript:@"s"]];
     [self.view addSubview:sView];
     [sView setFrame:CGRectMake(0, 0, 300, 300)];
