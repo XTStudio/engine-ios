@@ -13,7 +13,10 @@
 @implementation EDOObjectTransfer
 
 + (JSValue *)convertToJSValueWithObject:(NSObject *)anObject context:(JSContext *)context {
-    if ([anObject isKindOfClass:[NSString class]] || [anObject isKindOfClass:[NSNumber class]]) {
+    if (anObject == nil) {
+        return [JSValue valueWithUndefinedInContext:context ?: [JSContext currentContext]];
+    }
+    else if ([anObject isKindOfClass:[NSString class]] || [anObject isKindOfClass:[NSNumber class]]) {
         return (JSValue *)anObject;
     }
     else if ([anObject isKindOfClass:[NSDictionary class]]) {
@@ -73,7 +76,10 @@
 }
 
 + (id)convertToNSValueWithJSValue:(JSValue *)anValue eageringType:(NSString *)eageringType owner:(JSValue *)owner {
-    if ([eageringType hasPrefix:@"{CGRect"]) {
+    if (anValue.isUndefined) {
+        return nil;
+    }
+    else if ([eageringType hasPrefix:@"{CGRect"]) {
         return [NSValue valueWithCGRect:[anValue toRect]];
     }
     else if ([eageringType hasPrefix:@"{CGSize"]) {
