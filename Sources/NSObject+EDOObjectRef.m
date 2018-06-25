@@ -51,5 +51,28 @@ static int edo_listeningEvents_key;
         }
     }
 }
+    
+- (id)edo_valueWithEventName:(NSString *)named arguments:(NSArray *)arguments {
+    if ([self edo_objectRef] == nil) {
+        return nil;
+    }
+    if (![self.edo_listeningEvents containsObject:named]) {
+        return nil;
+    }
+    JSValue *scripObject = [[EDOExporter sharedExporter] scriptObjectWithObject:self];
+    if (scripObject != nil) {
+        if (arguments != nil && arguments.count > 0) {
+            NSMutableArray *jsArguments = [[EDOObjectTransfer convertToJSArgumentsWithNSArguments:arguments context:scripObject.context] mutableCopy];
+            [jsArguments insertObject:named atIndex:0];
+            JSValue *returnValue = [scripObject invokeMethod:@"val" withArguments:jsArguments.copy];
+            return [EDOObjectTransfer convertToNSValueWithJSValue:returnValue owner:returnValue];
+        }
+        else {
+            JSValue *returnValue = [scripObject invokeMethod:@"val" withArguments:@[named]];
+            return [EDOObjectTransfer convertToNSValueWithJSValue:returnValue owner:returnValue];
+        }
+    }
+    return nil;
+}
 
 @end

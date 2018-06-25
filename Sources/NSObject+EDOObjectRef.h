@@ -14,5 +14,6 @@
 @property (nonatomic, strong) NSSet *edo_listeningEvents;
 
 - (void)edo_emitWithEventName:(nonnull NSString *)named arguments:(nullable NSArray *)arguments;
+- (id)edo_valueWithEventName:(nonnull NSString *)named arguments:(nullable NSArray *)arguments;
 
 @end
