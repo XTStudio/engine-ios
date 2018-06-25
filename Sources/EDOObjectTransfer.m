@@ -45,6 +45,10 @@
             UIEdgeInsets edgeInsets = [nsValue UIEdgeInsetsValue];
             return (JSValue *)@{ @"top": @(edgeInsets.top), @"left": @(edgeInsets.left), @"bottom": @(edgeInsets.bottom), @"right": @(edgeInsets.right) };
         }
+        else if ([objcType hasPrefix:@"{NSRange"]) {
+            NSRange range = [nsValue rangeValue];
+            return (JSValue *)@{ @"location": @(range.location), @"length": @(range.length) };
+        }
     }
     else {
         return [[EDOExporter sharedExporter] scriptObjectWithObject:anObject];
@@ -103,6 +107,11 @@
                                                                [dict[@"left"] floatValue],
                                                                [dict[@"bottom"] floatValue],
                                                                [dict[@"right"] floatValue])];
+    }
+    else if ([eageringType hasPrefix:@"{NSRange"] && [anValue isObject]) {
+        NSDictionary *dict = [anValue toDictionary];
+        return [NSValue valueWithRange:NSMakeRange([dict[@"location"] floatValue],
+                                                   [dict[@"length"] floatValue])];
     }
     else if (anValue.isObject) {
         JSValue *metaClassValue = [anValue objectForKeyedSubscript:@"_meta_class"];
