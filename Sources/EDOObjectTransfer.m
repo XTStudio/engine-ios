@@ -155,13 +155,17 @@
             NSNumber *idx = metaClassInfo[@"idx"];
             return ^(NSArray *nsArguments){
                 JSValue *owner = [managedValue value];
+                id returnValue;
                 if (owner != nil) {
-                    [owner invokeMethod:@"__invokeCallback" withArguments:@[
-                                                                            idx ?: @(-1),
-                                                                            [self convertToJSArgumentsWithNSArguments:nsArguments
-                                                                                                              context:owner.context]
-                                                                            ]];
+                    returnValue = [owner invokeMethod:@"__invokeCallback" withArguments:@[
+                                                                                             idx ?: @(-1),
+                                                                                             [self convertToJSArgumentsWithNSArguments:nsArguments
+                                                                                                                               context:owner.context]
+                                                                                             ]];
+                    returnValue = [self convertToNSValueWithJSValue:returnValue owner:returnValue];
+                    return returnValue;
                 }
+                return returnValue;
             };
         }
         else if ([metaClassInfo[@"objectRef"] isKindOfClass:[NSString class]]) {
