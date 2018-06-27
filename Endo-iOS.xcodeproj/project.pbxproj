@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		906D73D920CA787C003F89D8 /* UISlider+EDOExporting.m in Sources */ = {isa = PBXBuildFile; fileRef = 906D73D820CA787C003F89D8 /* UISlider+EDOExporting.m */; };
+		909365E920E38223008E4BCA /* Endo_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365E820E38223008E4BCA /* Endo_iOSTests.m */; };
+		909365F220E382AB008E4BCA /* UIView+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F120E382AB008E4BCA /* UIView+Tests.m */; };
+		909365F520E383F2008E4BCA /* UIButton+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F420E383F2008E4BCA /* UIButton+Tests.m */; };
+		909365F820E38741008E4BCA /* FooObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F720E38741008E4BCA /* FooObject.m */; };
 		90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA922F20C667EE0096ED9D /* AppDelegate.m */; };
 		90FA923320C667EE0096ED9D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA923220C667EE0096ED9D /* ViewController.m */; };
 		90FA923620C667EE0096ED9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90FA923420C667EE0096ED9D /* Main.storyboard */; };
@@ -17,17 +20,32 @@
 		90FA924920C66B370096ED9D /* EDOExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA924820C66B370096ED9D /* EDOExporter.m */; };
 		90FA924C20C66B790096ED9D /* NSObject+EDOObjectRef.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA924B20C66B790096ED9D /* NSObject+EDOObjectRef.m */; };
 		90FA924F20C66D2F0096ED9D /* EDOExportable.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA924E20C66D2F0096ED9D /* EDOExportable.m */; };
-		90FA925320C66F6B0096ED9D /* UIView+EDOExporting.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925220C66F6B0096ED9D /* UIView+EDOExporting.m */; };
 		90FA925920C781700096ED9D /* EDOObjectTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925820C781700096ED9D /* EDOObjectTransfer.m */; };
-		90FA925C20C7E03A0096ED9D /* UIColor+EDOExporting.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA925B20C7E03A0096ED9D /* UIColor+EDOExporting.m */; };
 		933BAA0EDCEAB8443DD783AD /* libPods-Endo-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		909365EB20E38223008E4BCA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90FA922320C667EE0096ED9D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 90FA922A20C667EE0096ED9D;
+			remoteInfo = "Endo-iOS";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Endo-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C5DB9959260C5C86CFD1D6B /* Pods-Endo-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Endo-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS.debug.xcconfig"; sourceTree = "<group>"; };
-		906D73D720CA787C003F89D8 /* UISlider+EDOExporting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UISlider+EDOExporting.h"; sourceTree = "<group>"; };
-		906D73D820CA787C003F89D8 /* UISlider+EDOExporting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UISlider+EDOExporting.m"; sourceTree = "<group>"; };
+		909365E620E38223008E4BCA /* Endo-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Endo-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		909365E820E38223008E4BCA /* Endo_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Endo_iOSTests.m; sourceTree = "<group>"; };
+		909365EA20E38223008E4BCA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		909365F020E382AB008E4BCA /* UIView+Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+Tests.h"; sourceTree = "<group>"; };
+		909365F120E382AB008E4BCA /* UIView+Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+Tests.m"; sourceTree = "<group>"; };
+		909365F320E383F2008E4BCA /* UIButton+Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIButton+Tests.h"; sourceTree = "<group>"; };
+		909365F420E383F2008E4BCA /* UIButton+Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Tests.m"; sourceTree = "<group>"; };
+		909365F620E38741008E4BCA /* FooObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FooObject.h; sourceTree = "<group>"; };
+		909365F720E38741008E4BCA /* FooObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FooObject.m; sourceTree = "<group>"; };
 		90FA922B20C667EE0096ED9D /* Endo-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Endo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90FA922E20C667EE0096ED9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		90FA922F20C667EE0096ED9D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -44,16 +62,19 @@
 		90FA924B20C66B790096ED9D /* NSObject+EDOObjectRef.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+EDOObjectRef.m"; sourceTree = "<group>"; };
 		90FA924D20C66D2F0096ED9D /* EDOExportable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDOExportable.h; sourceTree = "<group>"; };
 		90FA924E20C66D2F0096ED9D /* EDOExportable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDOExportable.m; sourceTree = "<group>"; };
-		90FA925120C66F6B0096ED9D /* UIView+EDOExporting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+EDOExporting.h"; sourceTree = "<group>"; };
-		90FA925220C66F6B0096ED9D /* UIView+EDOExporting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+EDOExporting.m"; sourceTree = "<group>"; };
 		90FA925720C781700096ED9D /* EDOObjectTransfer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EDOObjectTransfer.h; sourceTree = "<group>"; };
 		90FA925820C781700096ED9D /* EDOObjectTransfer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDOObjectTransfer.m; sourceTree = "<group>"; };
-		90FA925A20C7E03A0096ED9D /* UIColor+EDOExporting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+EDOExporting.h"; sourceTree = "<group>"; };
-		90FA925B20C7E03A0096ED9D /* UIColor+EDOExporting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+EDOExporting.m"; sourceTree = "<group>"; };
 		AFC0F9E0535ED204D738C45F /* Pods-Endo-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Endo-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		909365E320E38223008E4BCA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		90FA922820C667EE0096ED9D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -74,12 +95,27 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		909365E720E38223008E4BCA /* Endo-iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				909365E820E38223008E4BCA /* Endo_iOSTests.m */,
+				909365F620E38741008E4BCA /* FooObject.h */,
+				909365F720E38741008E4BCA /* FooObject.m */,
+				909365F020E382AB008E4BCA /* UIView+Tests.h */,
+				909365F120E382AB008E4BCA /* UIView+Tests.m */,
+				909365F320E383F2008E4BCA /* UIButton+Tests.h */,
+				909365F420E383F2008E4BCA /* UIButton+Tests.m */,
+				909365EA20E38223008E4BCA /* Info.plist */,
+			);
+			path = "Endo-iOSTests";
+			sourceTree = "<group>";
+		};
 		90FA922220C667EE0096ED9D = {
 			isa = PBXGroup;
 			children = (
 				90FA924420C667FB0096ED9D /* Sources */,
 				90FA922D20C667EE0096ED9D /* Endo-iOS */,
-				90FA925020C66F480096ED9D /* Samples */,
+				909365E720E38223008E4BCA /* Endo-iOSTests */,
 				90FA922C20C667EE0096ED9D /* Products */,
 				1EAA54B85127CDC1EAC6E36E /* Pods */,
 				B802CC75CB5DF355AF330258 /* Frameworks */,
@@ -90,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				90FA922B20C667EE0096ED9D /* Endo-iOS.app */,
+				909365E620E38223008E4BCA /* Endo-iOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -125,19 +162,6 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
-		90FA925020C66F480096ED9D /* Samples */ = {
-			isa = PBXGroup;
-			children = (
-				90FA925120C66F6B0096ED9D /* UIView+EDOExporting.h */,
-				90FA925220C66F6B0096ED9D /* UIView+EDOExporting.m */,
-				906D73D720CA787C003F89D8 /* UISlider+EDOExporting.h */,
-				906D73D820CA787C003F89D8 /* UISlider+EDOExporting.m */,
-				90FA925A20C7E03A0096ED9D /* UIColor+EDOExporting.h */,
-				90FA925B20C7E03A0096ED9D /* UIColor+EDOExporting.m */,
-			);
-			path = Samples;
-			sourceTree = "<group>";
-		};
 		B802CC75CB5DF355AF330258 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -149,6 +173,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		909365E520E38223008E4BCA /* Endo-iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 909365ED20E38223008E4BCA /* Build configuration list for PBXNativeTarget "Endo-iOSTests" */;
+			buildPhases = (
+				909365E220E38223008E4BCA /* Sources */,
+				909365E320E38223008E4BCA /* Frameworks */,
+				909365E420E38223008E4BCA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				909365EC20E38223008E4BCA /* PBXTargetDependency */,
+			);
+			name = "Endo-iOSTests";
+			productName = "Endo-iOSTests";
+			productReference = 909365E620E38223008E4BCA /* Endo-iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		90FA922A20C667EE0096ED9D /* Endo-iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 90FA924120C667EE0096ED9D /* Build configuration list for PBXNativeTarget "Endo-iOS" */;
@@ -178,6 +220,10 @@
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "UED Center, YY Inc.";
 				TargetAttributes = {
+					909365E520E38223008E4BCA = {
+						CreatedOnToolsVersion = 9.3;
+						TestTargetID = 90FA922A20C667EE0096ED9D;
+					};
 					90FA922A20C667EE0096ED9D = {
 						CreatedOnToolsVersion = 9.3;
 					};
@@ -197,11 +243,19 @@
 			projectRoot = "";
 			targets = (
 				90FA922A20C667EE0096ED9D /* Endo-iOS */,
+				909365E520E38223008E4BCA /* Endo-iOSTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		909365E420E38223008E4BCA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		90FA922920C667EE0096ED9D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -266,6 +320,17 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		909365E220E38223008E4BCA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				909365F220E382AB008E4BCA /* UIView+Tests.m in Sources */,
+				909365F820E38741008E4BCA /* FooObject.m in Sources */,
+				909365E920E38223008E4BCA /* Endo_iOSTests.m in Sources */,
+				909365F520E383F2008E4BCA /* UIButton+Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		90FA922720C667EE0096ED9D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -275,15 +340,20 @@
 				90FA924920C66B370096ED9D /* EDOExporter.m in Sources */,
 				90FA925920C781700096ED9D /* EDOObjectTransfer.m in Sources */,
 				90FA923E20C667EE0096ED9D /* main.m in Sources */,
-				90FA925320C66F6B0096ED9D /* UIView+EDOExporting.m in Sources */,
-				906D73D920CA787C003F89D8 /* UISlider+EDOExporting.m in Sources */,
-				90FA925C20C7E03A0096ED9D /* UIColor+EDOExporting.m in Sources */,
 				90FA924F20C66D2F0096ED9D /* EDOExportable.m in Sources */,
 				90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		909365EC20E38223008E4BCA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 90FA922A20C667EE0096ED9D /* Endo-iOS */;
+			targetProxy = 909365EB20E38223008E4BCA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		90FA923420C667EE0096ED9D /* Main.storyboard */ = {
@@ -305,6 +375,42 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		909365EE20E38223008E4BCA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Endo-iOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.xt.Endo-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Endo-iOS.app/Endo-iOS";
+			};
+			name = Debug;
+		};
+		909365EF20E38223008E4BCA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Endo-iOSTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.xt.Endo-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Endo-iOS.app/Endo-iOS";
+			};
+			name = Release;
+		};
 		90FA923F20C667EE0096ED9D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -461,6 +567,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		909365ED20E38223008E4BCA /* Build configuration list for PBXNativeTarget "Endo-iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				909365EE20E38223008E4BCA /* Debug */,
+				909365EF20E38223008E4BCA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		90FA922620C667EE0096ED9D /* Build configuration list for PBXProject "Endo-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
