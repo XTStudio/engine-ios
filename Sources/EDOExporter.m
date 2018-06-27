@@ -116,7 +116,7 @@
             if (![exported containsObject:obj.superName]) {
                 return;
             }
-            NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(){var _this = _super.call(this, %@) || this;if(arguments[0]instanceof _EDO_MetaClass){_this._meta_class=arguments[0]}else{var args=[];for(var key in arguments){args.push(_this.__convertToJSValue(arguments[key]))}_this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(\"%@\",args,_this)}return _this;}", classKey, classKey];
+            NSString *constructorScript = [NSString stringWithFormat:@"function Initializer(isParent){var _this = _super.call(this, true) || this;if(arguments[0]instanceof _EDO_MetaClass){_this._meta_class=arguments[0]}else if(isParent !== true){var args=[];for(var key in arguments){args.push(_this.__convertToJSValue(arguments[key]))}_this._meta_class=ENDO.createInstanceWithNameArgumentsOwner(\"%@\",args,_this)}return _this;}", classKey];
             NSMutableString *propsScript = [NSMutableString string];
             [obj.exportedProps enumerateObjectsUsingBlock:^(NSString * _Nonnull propKey, NSUInteger idx, BOOL * _Nonnull stop) {
                 [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:false,configurable:true});",

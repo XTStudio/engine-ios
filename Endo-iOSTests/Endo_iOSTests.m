@@ -37,6 +37,7 @@
 - (void)testClasses {
     XCTAssertFalse([self.context evaluateScript:@"new UIView"].isUndefined);
     XCTAssertFalse([self.context evaluateScript:@"new UIButton"].isUndefined);
+    XCTAssertFalse([self.context evaluateScript:@"new BarObject"].isUndefined);
 }
 
 - (void)testNumberProperty {

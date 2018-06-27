@@ -11,6 +11,7 @@
 		909365F220E382AB008E4BCA /* UIView+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F120E382AB008E4BCA /* UIView+Tests.m */; };
 		909365F520E383F2008E4BCA /* UIButton+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F420E383F2008E4BCA /* UIButton+Tests.m */; };
 		909365F820E38741008E4BCA /* FooObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F720E38741008E4BCA /* FooObject.m */; };
+		909365FB20E391A6008E4BCA /* BarObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365FA20E391A6008E4BCA /* BarObject.m */; };
 		90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA922F20C667EE0096ED9D /* AppDelegate.m */; };
 		90FA923320C667EE0096ED9D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA923220C667EE0096ED9D /* ViewController.m */; };
 		90FA923620C667EE0096ED9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90FA923420C667EE0096ED9D /* Main.storyboard */; };
@@ -46,6 +47,8 @@
 		909365F420E383F2008E4BCA /* UIButton+Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Tests.m"; sourceTree = "<group>"; };
 		909365F620E38741008E4BCA /* FooObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FooObject.h; sourceTree = "<group>"; };
 		909365F720E38741008E4BCA /* FooObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FooObject.m; sourceTree = "<group>"; };
+		909365F920E391A6008E4BCA /* BarObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BarObject.h; sourceTree = "<group>"; };
+		909365FA20E391A6008E4BCA /* BarObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BarObject.m; sourceTree = "<group>"; };
 		90FA922B20C667EE0096ED9D /* Endo-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Endo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90FA922E20C667EE0096ED9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		90FA922F20C667EE0096ED9D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -101,6 +104,8 @@
 				909365E820E38223008E4BCA /* Endo_iOSTests.m */,
 				909365F620E38741008E4BCA /* FooObject.h */,
 				909365F720E38741008E4BCA /* FooObject.m */,
+				909365F920E391A6008E4BCA /* BarObject.h */,
+				909365FA20E391A6008E4BCA /* BarObject.m */,
 				909365F020E382AB008E4BCA /* UIView+Tests.h */,
 				909365F120E382AB008E4BCA /* UIView+Tests.m */,
 				909365F320E383F2008E4BCA /* UIButton+Tests.h */,
@@ -326,6 +331,7 @@
 			files = (
 				909365F220E382AB008E4BCA /* UIView+Tests.m in Sources */,
 				909365F820E38741008E4BCA /* FooObject.m in Sources */,
+				909365FB20E391A6008E4BCA /* BarObject.m in Sources */,
 				909365E920E38223008E4BCA /* Endo_iOSTests.m in Sources */,
 				909365F520E383F2008E4BCA /* UIButton+Tests.m in Sources */,
 			);

@@ -31,6 +31,15 @@
     EDO_RELEASE(self.view);
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        
+    }
+    return self;
+}
+
 - (void)setView:(UIView *)view {
     EDO_RELEASE(_view);
     _view = view;
