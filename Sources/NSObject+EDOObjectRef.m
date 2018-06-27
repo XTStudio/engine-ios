@@ -16,6 +16,10 @@
 static int edo_objectRef_key;
 static int edo_listeningEvents_key;
 
+- (void)edo_release {
+    
+}
+
 - (NSString *)edo_objectRef {
     return objc_getAssociatedObject(self, &edo_objectRef_key);
 }

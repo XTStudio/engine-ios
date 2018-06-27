@@ -48,6 +48,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (nullable id)nsValueWithJSValue:(JSValue *)value;
 - (nullable id)nsValueWithObjectRef:(nonnull NSString *)objectRef;
 - (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject;
+- (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject initializer:(id (^)(NSArray *arguments))initializer;
 - (void)retain:(NSObject *)anObject;
 - (void)release:(NSObject *)anObject;
 

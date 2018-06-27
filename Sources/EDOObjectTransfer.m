@@ -16,6 +16,9 @@
     if (anObject == nil) {
         return [JSValue valueWithUndefinedInContext:context ?: [JSContext currentContext]];
     }
+    else if ([anObject isKindOfClass:[JSValue class]]) {
+        return (JSValue *)anObject;
+    }
     else if ([anObject isKindOfClass:[NSString class]] || [anObject isKindOfClass:[NSNumber class]]) {
         return (JSValue *)anObject;
     }
@@ -118,7 +121,7 @@
         if (metaClassValue.isObject) {
             NSDictionary *metaClassInfo = metaClassValue.toDictionary;
             if ([metaClassInfo[@"objectRef"] isKindOfClass:[NSString class]]) {
-                return [[EDOExporter sharedExporter] nsValueWithObjectRef:metaClassInfo[@"objectRef"]];
+                return [[EDOExporter sharedExporter] nsValueWithObjectRef:metaClassInfo[@"objectRef"]] ?: anValue;
             }
         }
         else {
