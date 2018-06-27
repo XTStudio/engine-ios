@@ -442,6 +442,23 @@
         if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef] != nil) {
             return self.scriptObjects[anObject.edo_objectRef].value;
         }
+        else if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef] == nil) {
+            for (NSString *aKey in self.exportables) {
+                if (self.exportables[aKey].clazz == anObject.class) {
+                    JSValue *scriptObject = [[JSContext currentContext] evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",
+                                                                                        self.exportables[aKey].name,
+                                                                                        self.exportables[aKey].name,
+                                                                                        anObject.edo_objectRef]];
+                    EDOObjectReference *objectReference = [[EDOObjectReference alloc] initWithValue:anObject];
+                    JSValue *objectMetaClass = [scriptObject objectForKeyedSubscript:@"_meta_class"];
+                    objectReference.metaClassManagedValue = [[JSManagedValue alloc] initWithValue:objectMetaClass];
+                    [self.references setObject:objectReference forKey:anObject.edo_objectRef];
+                    [self.scriptObjects setObject:[JSManagedValue managedValueWithValue:scriptObject] forKey:anObject.edo_objectRef];
+                    return scriptObject;
+                }
+            }
+            return nil;
+        }
         else if (anObject.edo_objectRef == nil) {
             for (NSString *aKey in self.exportables) {
                 if (self.exportables[aKey].clazz == anObject.class) {
@@ -470,6 +487,21 @@
     @synchronized(self) {
         if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef] != nil) {
             return self.scriptObjects[anObject.edo_objectRef].value;
+        }
+        else if (anObject.edo_objectRef != nil && self.scriptObjects[anObject.edo_objectRef] == nil) {
+            for (NSString *aKey in self.exportables) {
+                if (self.exportables[aKey].clazz == anObject.class) {
+                    JSValue *objectMetaClass = [[JSContext currentContext] evaluateScript:[NSString stringWithFormat:@"new _EDO_MetaClass(\"%@\", \"%@\")",
+                                                                                           self.exportables[aKey].name,
+                                                                                           anObject.edo_objectRef]];
+                    JSValue *scriptObject = initializer(@[objectMetaClass]);
+                    EDOObjectReference *objectReference = [[EDOObjectReference alloc] initWithValue:anObject];
+                    objectReference.metaClassManagedValue = [[JSManagedValue alloc] initWithValue:objectMetaClass];
+                    [self.references setObject:objectReference forKey:anObject.edo_objectRef];
+                    [self.scriptObjects setObject:[JSManagedValue managedValueWithValue:scriptObject] forKey:anObject.edo_objectRef];
+                    return scriptObject;
+                }
+            }
         }
         else if (anObject.edo_objectRef == nil) {
             for (NSString *aKey in self.exportables) {
