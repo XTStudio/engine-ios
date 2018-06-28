@@ -58,7 +58,7 @@ static int kReferenceTag;
     }
     @synchronized(self) {
         EDOObjectReference *ref = self.edo_references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
-        ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject andOwner:self];
+        ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject andOwner:[EDOExporter sharedExporter]];
         [self.edo_references setObject:ref forKey:anObject.edo_objectRef];
     }
 }
@@ -93,7 +93,7 @@ static int kReferenceTag;
                                                                      exportable.name,
                                                                      anObject.edo_objectRef]];
                     JSValue *scriptObject = initializer(@[objectMetaClass], YES);
-                    ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject];
+                    ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject andOwner:[EDOExporter sharedExporter]];
                     return scriptObject;
                 }
                 else {
@@ -106,7 +106,7 @@ static int kReferenceTag;
                                                                   exportable.name,
                                                                   exportable.name,
                                                                   anObject.edo_objectRef]];
-                    ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject];
+                    ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject andOwner:[EDOExporter sharedExporter]];
                     return scriptObject;
                 }
             }
@@ -124,10 +124,10 @@ static int kReferenceTag;
         [self.edo_references enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOObjectReference * _Nonnull obj, BOOL * _Nonnull stop) {
             CFIndex retainCount = (CFIndex)CFGetRetainCount((__bridge CFTypeRef)(obj.value));
             if (retainCount <= obj.value.edo_refCount + 1) {
-                [self.virtualMachine removeManagedReference:obj.soManagedValue withOwner:self];
+                [self.virtualMachine removeManagedReference:obj.soManagedValue withOwner:[EDOExporter sharedExporter]];
             }
             else {
-                [self.virtualMachine addManagedReference:obj.soManagedValue withOwner:self];
+                [self.virtualMachine addManagedReference:obj.soManagedValue withOwner:[EDOExporter sharedExporter]];
             }
             if (retainCount <= obj.value.edo_refCount + 1 && obj.soManagedValue.value == nil) {
                 [removingKeys addObject:key];
@@ -137,7 +137,7 @@ static int kReferenceTag;
             }
         }];
         for (NSString *removeKey in removingKeys) {
-            [self.virtualMachine removeManagedReference:self.edo_references[removeKey].soManagedValue withOwner:self];
+            [self.virtualMachine removeManagedReference:self.edo_references[removeKey].soManagedValue withOwner:[EDOExporter sharedExporter]];
             self.edo_references[removeKey].value.edo_refCount--;
             [self.edo_references removeObjectForKey:removeKey];
         }
