@@ -51,7 +51,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (nullable id)nsValueWithObjectRef:(nonnull NSString *)objectRef;
 - (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject
                                      context:(nonnull JSContext *)context
-                                 initializer:(nullable id (^)(NSArray *))initializer
+                                 initializer:(nullable id (^)(NSArray *, BOOL))initializer
                               createIfNeeded:(BOOL)createdIfNeed;
 - (nonnull NSArray<JSValue *> *)scriptObjectsWithObject:(nonnull NSObject *)anObject;
 

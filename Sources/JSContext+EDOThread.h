@@ -24,7 +24,7 @@
 - (nonnull JSValue *)edo_createMetaClass:(nonnull NSObject *)anObject;
 - (void)edo_storeScriptObject:(nonnull NSObject *)anObject scriptObject:(nonnull JSValue *)scriptObject;
 - (nullable id)edo_nsValueWithObjectRef:(nonnull NSString *)objectRef;
-- (nullable JSValue *)edo_jsValueWithObject:(nonnull NSObject *)anObject initializer:(nullable id (^)(NSArray *))initializer createIfNeeded:(BOOL)createIfNeeded;
+- (nullable JSValue *)edo_jsValueWithObject:(nonnull NSObject *)anObject initializer:(nullable id (^)(NSArray *, BOOL))initializer createIfNeeded:(BOOL)createIfNeeded;
 - (void)edo_garbageCollect;
 
 @end

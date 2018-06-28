@@ -156,16 +156,16 @@
             [metaClassInfo[@"classname"] isEqualToString:@"__Function"]) {
             JSManagedValue *managedValue = [JSManagedValue managedValueWithValue:owner];
             NSNumber *idx = metaClassInfo[@"idx"];
-            return ^(NSArray *nsArguments){
+            return ^(NSArray *nsArguments, BOOL eagerJSValue){
                 JSValue *owner = [managedValue value];
                 id returnValue;
                 if (owner != nil) {
                     returnValue = [owner invokeMethod:@"__invokeCallback" withArguments:@[
-                                                                                             idx ?: @(-1),
-                                                                                             [self convertToJSArgumentsWithNSArguments:nsArguments
-                                                                                                                               context:owner.context]
-                                                                                             ]];
-                    returnValue = [self convertToNSValueWithJSValue:returnValue owner:returnValue];
+                                                                                          idx ?: @(-1),
+                                                                                          [self convertToJSArgumentsWithNSArguments:nsArguments
+                                                                                                                            context:owner.context]
+                                                                                          ]];
+                    returnValue = eagerJSValue ? returnValue : [self convertToNSValueWithJSValue:returnValue owner:returnValue];
                     return returnValue;
                 }
                 return returnValue;

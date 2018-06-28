@@ -65,7 +65,7 @@ static int kReferenceTag;
     }
 }
 
-- (JSValue *)edo_jsValueWithObject:(NSObject *)anObject initializer:(id (^)(NSArray *))initializer createIfNeeded:(BOOL)createIfNeeded {
+- (JSValue *)edo_jsValueWithObject:(NSObject *)anObject initializer:(id (^)(NSArray *, BOOL))initializer createIfNeeded:(BOOL)createIfNeeded {
     if ([anObject isKindOfClass:[JSValue class]]) {
         return (id)anObject;
     }
@@ -81,9 +81,9 @@ static int kReferenceTag;
             if (exportable.clazz == anObject.class) {
                 if (initializer != nil) {
                     JSValue *objectMetaClass = [self evaluateScript:[NSString stringWithFormat:@"new _EDO_MetaClass(\"%@\", \"%@\")",
-                                                                                        exportable.name,
-                                                                                        anObject.edo_objectRef]];
-                    JSValue *scriptObject = initializer(@[objectMetaClass]);
+                                                                     exportable.name,
+                                                                     anObject.edo_objectRef]];
+                    JSValue *scriptObject = initializer(@[objectMetaClass], YES);
                     @synchronized(self) {
                         EDOObjectReference *ref = self.references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
                         ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject];
@@ -93,9 +93,9 @@ static int kReferenceTag;
                 }
                 else {
                     JSValue *scriptObject = [self evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",
-                                                                                        exportable.name,
-                                                                                        exportable.name,
-                                                                                        anObject.edo_objectRef]];
+                                                                  exportable.name,
+                                                                  exportable.name,
+                                                                  anObject.edo_objectRef]];
                     @synchronized(self) {
                         EDOObjectReference *ref = self.references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
                         ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject];

@@ -398,7 +398,7 @@
 
 - (JSValue *)scriptObjectWithObject:(NSObject *)anObject
                             context:(JSContext *)context
-                        initializer:(id (^)(NSArray *))initializer
+                        initializer:(id (^)(NSArray *, BOOL))initializer
                      createIfNeeded:(BOOL)createdIfNeed {
     return [context edo_jsValueWithObject:anObject initializer:initializer createIfNeeded:createdIfNeed];
 }
