@@ -1,0 +1,5 @@
+podfile: Podfile
+language: objective-c
+script:
+  - xctool -workspace Endo-iOS.xcworkspace -scheme Endo-iOS -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+  - xctool test -workspace Endo-iOS.xcworkspace -scheme Endo-iOSTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
