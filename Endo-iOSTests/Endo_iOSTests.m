@@ -40,6 +40,11 @@
     XCTAssertFalse([self.context evaluateScript:@"new BarObject"].isUndefined);
 }
 
+- (void)testInitializer {
+    FooObject *obj = [[EDOExporter sharedExporter] nsValueWithJSValue:[self.context evaluateScript:@"new FooObject(new UIView)"]];
+    XCTAssertTrue(obj.barCalled);
+}
+
 - (void)testNumberProperty {
     [self.context evaluateScript:@"var testNumberProperty = new UIView"];
     [self.context evaluateScript:@"testNumberProperty.alpha = 0.5"];

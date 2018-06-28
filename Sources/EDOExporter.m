@@ -250,7 +250,7 @@
         return nil;
     }
     if ([name isKindOfClass:[NSString class]] && self.exportables[name] != nil) {
-        NSObject *newInstance = self.exportables[name].initializer != nil ? self.exportables[name].initializer(arguments) : [self.exportables[name].clazz new];
+        NSObject *newInstance = self.exportables[name].initializer != nil ? self.exportables[name].initializer([EDOObjectTransfer convertToNSArgumentsWithJSArguments:arguments owner:owner]) : [self.exportables[name].clazz new];
         if (newInstance == nil) {
             return [JSValue valueWithUndefinedInContext:owner.context];
         }

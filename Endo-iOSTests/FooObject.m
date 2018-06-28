@@ -13,6 +13,14 @@
 
 + (void)load {
     EDO_EXPORT_CLASS(@"FooObject", nil);
+    [[EDOExporter sharedExporter] exportInitializer:[self class] initializer:^id(NSArray *arguments) {
+        if (0 < arguments.count && [arguments[0] isKindOfClass:[UIView class]]) {
+            FooObject *obj = [FooObject new];
+            obj.barCalled = YES;
+            return obj;
+        }
+        return [FooObject new];
+    }];
     EDO_EXPORT_PROPERTY(@"view");
     EDO_EXPORT_PROPERTY(@"barCalled");
     EDO_EXPORT_PROPERTY(@"fooBarCalled");
