@@ -44,6 +44,10 @@ static int kReferenceTag;
     if (anObject.edo_objectRef == nil) {
         anObject.edo_objectRef = [[NSUUID UUID] UUIDString];
     }
+    @synchronized(self) {
+        EDOObjectReference *ref = self.edo_references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
+        [self.edo_references setObject:ref forKey:anObject.edo_objectRef];
+    }
     return [self evaluateScript:[NSString stringWithFormat:@"new _EDO_MetaClass(\"%@\", \"%@\")",
                                  NSStringFromClass(anObject.class), anObject.edo_objectRef]];
 }
@@ -80,27 +84,29 @@ static int kReferenceTag;
             EDOExportable *exportable = [EDOExporter sharedExporter].exportables[aKey];
             if (exportable.clazz == anObject.class) {
                 if (initializer != nil) {
+                    EDOObjectReference *ref;
+                    @synchronized(self) {
+                        ref = self.edo_references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
+                        [self.edo_references setObject:ref forKey:anObject.edo_objectRef];
+                    }
                     JSValue *objectMetaClass = [self evaluateScript:[NSString stringWithFormat:@"new _EDO_MetaClass(\"%@\", \"%@\")",
                                                                      exportable.name,
                                                                      anObject.edo_objectRef]];
                     JSValue *scriptObject = initializer(@[objectMetaClass], YES);
-                    @synchronized(self) {
-                        EDOObjectReference *ref = self.edo_references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
-                        ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject];
-                        [self.edo_references setObject:ref forKey:anObject.edo_objectRef];
-                    }
+                    ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject];
                     return scriptObject;
                 }
                 else {
+                    EDOObjectReference *ref;
+                    @synchronized(self) {
+                        EDOObjectReference *ref = self.edo_references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
+                        [self.edo_references setObject:ref forKey:anObject.edo_objectRef];
+                    }
                     JSValue *scriptObject = [self evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",
                                                                   exportable.name,
                                                                   exportable.name,
                                                                   anObject.edo_objectRef]];
-                    @synchronized(self) {
-                        EDOObjectReference *ref = self.edo_references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
-                        ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject];
-                        [self.edo_references setObject:ref forKey:anObject.edo_objectRef];
-                    }
+                    ref.soManagedValue = [JSManagedValue managedValueWithValue:scriptObject];
                     return scriptObject;
                 }
             }
