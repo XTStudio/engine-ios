@@ -92,7 +92,7 @@ static int kReferenceTag;
                     return scriptObject;
                 }
                 else {
-                    JSValue *scriptObject = [[JSContext currentContext] evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",
+                    JSValue *scriptObject = [self evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",
                                                                                         exportable.name,
                                                                                         exportable.name,
                                                                                         anObject.edo_objectRef]];
