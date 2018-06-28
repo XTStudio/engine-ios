@@ -13,11 +13,16 @@
 
 @implementation NSObject (EDOObjectRef)
 
+static int edo_refCount_key;
 static int edo_objectRef_key;
 static int edo_listeningEvents_key;
 
-- (void)edo_release {
-    
+- (NSInteger)edo_refCount {
+    return [objc_getAssociatedObject(self, &edo_refCount_key) integerValue];
+}
+
+- (void)setEdo_refCount:(NSInteger)edo_refCount {
+    objc_setAssociatedObject(self, &edo_refCount_key, @(edo_refCount), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (NSString *)edo_objectRef {
@@ -43,17 +48,16 @@ static int edo_listeningEvents_key;
     if (![self.edo_listeningEvents containsObject:named]) {
         return;
     }
-    JSValue *scripObject = [[EDOExporter sharedExporter] scriptObjectWithObject:self];
-    if (scripObject != nil) {
+    [[[EDOExporter sharedExporter] scriptObjectsWithObject:self] enumerateObjectsUsingBlock:^(JSValue * _Nonnull scriptObject, NSUInteger idx, BOOL * _Nonnull stop) {
         if (arguments != nil && arguments.count > 0) {
-            NSMutableArray *jsArguments = [[EDOObjectTransfer convertToJSArgumentsWithNSArguments:arguments context:scripObject.context] mutableCopy];
+            NSMutableArray *jsArguments = [[EDOObjectTransfer convertToJSArgumentsWithNSArguments:arguments context:scriptObject.context] mutableCopy];
             [jsArguments insertObject:named atIndex:0];
-            [scripObject invokeMethod:@"emit" withArguments:jsArguments.copy];
+            [scriptObject invokeMethod:@"emit" withArguments:jsArguments.copy];
         }
         else {
-            [scripObject invokeMethod:@"emit" withArguments:@[named]];
+            [scriptObject invokeMethod:@"emit" withArguments:@[named]];
         }
-    }
+    }];
 }
     
 - (id)edo_valueWithEventName:(NSString *)named arguments:(NSArray *)arguments {
@@ -63,7 +67,7 @@ static int edo_listeningEvents_key;
     if (![self.edo_listeningEvents containsObject:named]) {
         return nil;
     }
-    JSValue *scripObject = [[EDOExporter sharedExporter] scriptObjectWithObject:self];
+    JSValue *scripObject = [[EDOExporter sharedExporter] scriptObjectsWithObject:self].firstObject;
     if (scripObject != nil) {
         if (arguments != nil && arguments.count > 0) {
             NSMutableArray *jsArguments = [[EDOObjectTransfer convertToJSArgumentsWithNSArguments:arguments context:scripObject.context] mutableCopy];

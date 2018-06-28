@@ -27,10 +27,6 @@
     EDO_EXPORT_METHOD(methodWithCallback:)
 }
 
-- (void)dealloc {
-    EDO_RELEASE(self.view);
-}
-
 - (instancetype)init
 {
     self = [super init];
@@ -38,12 +34,6 @@
         
     }
     return self;
-}
-
-- (void)setView:(UIView *)view {
-    EDO_RELEASE(_view);
-    _view = view;
-    EDO_RETAIN(_view);
 }
 
 - (void)bindingMethod {

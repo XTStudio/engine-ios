@@ -54,7 +54,7 @@
         }
     }
     else {
-        return [[EDOExporter sharedExporter] scriptObjectWithObject:anObject];
+        return [[EDOExporter sharedExporter] scriptObjectWithObject:anObject context:context initializer:nil createIfNeeded:YES];
     }
     return [JSValue valueWithUndefinedInContext:context ?: [JSContext currentContext]];
 }

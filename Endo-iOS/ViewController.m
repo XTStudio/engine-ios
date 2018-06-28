@@ -18,6 +18,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    UIView *s = [UIView new];
+//    {
+//        UITapGestureRecognizer *t = [[UITapGestureRecognizer alloc] init];
+//        [s addGestureRecognizer:t];
+//    }
+//    NSLog(@"%ld", (long)CFGetRetainCount((__bridge CFTypeRef)([s gestureRecognizers].firstObject)));
+//    NSLog(@"123");
 }
 
 @end

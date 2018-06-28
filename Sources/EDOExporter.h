@@ -19,8 +19,6 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 #define EDO_EXPORT_METHOD(A) [[EDOExporter sharedExporter] exportMethodToJavaScript:[self class] selector:@selector(A)];
 #define EDO_EXPORT_METHOD_ALIAS(A, B) [[EDOExporter sharedExporter] exportMethodToJavaScript:[self class] selector:@selector(A) jsName:B];
 #define EDO_EXPORT_SCRIPT(A) [[EDOExporter sharedExporter] exportScriptToJavaScript:[self class] script:A];
-#define EDO_RETAIN(A) [[EDOExporter sharedExporter] retain:A];
-#define EDO_RELEASE(A) [[EDOExporter sharedExporter] release:A];
 
 @protocol EDOJSExport <JSExport>
 
@@ -32,7 +30,11 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 
 @end
 
+@class EDOExportable;
+
 @interface EDOExporter : NSObject<EDOJSExport>
+
+@property (nonatomic, readonly) NSDictionary<NSString *, EDOExportable *> *exportables;
 
 + (EDOExporter *)sharedExporter;
 
@@ -47,9 +49,10 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (void)exportScriptToJavaScript:(Class)clazz script:(NSString *)script;
 - (nullable id)nsValueWithJSValue:(JSValue *)value;
 - (nullable id)nsValueWithObjectRef:(nonnull NSString *)objectRef;
-- (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject;
-- (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject initializer:(id (^)(NSArray *arguments))initializer;
-- (void)retain:(NSObject *)anObject;
-- (void)release:(NSObject *)anObject;
+- (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject
+                                     context:(nonnull JSContext *)context
+                                 initializer:(nullable id (^)(NSArray *))initializer
+                              createIfNeeded:(BOOL)createdIfNeed;
+- (nonnull NSArray<JSValue *> *)scriptObjectsWithObject:(nonnull NSObject *)anObject;
 
 @end

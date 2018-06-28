@@ -12,6 +12,7 @@
 		909365F520E383F2008E4BCA /* UIButton+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F420E383F2008E4BCA /* UIButton+Tests.m */; };
 		909365F820E38741008E4BCA /* FooObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F720E38741008E4BCA /* FooObject.m */; };
 		909365FB20E391A6008E4BCA /* BarObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365FA20E391A6008E4BCA /* BarObject.m */; };
+		9093660120E477CF008E4BCA /* JSContext+EDOThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 9093660020E477CF008E4BCA /* JSContext+EDOThread.m */; };
 		90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA922F20C667EE0096ED9D /* AppDelegate.m */; };
 		90FA923320C667EE0096ED9D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA923220C667EE0096ED9D /* ViewController.m */; };
 		90FA923620C667EE0096ED9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90FA923420C667EE0096ED9D /* Main.storyboard */; };
@@ -49,6 +50,8 @@
 		909365F720E38741008E4BCA /* FooObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FooObject.m; sourceTree = "<group>"; };
 		909365F920E391A6008E4BCA /* BarObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BarObject.h; sourceTree = "<group>"; };
 		909365FA20E391A6008E4BCA /* BarObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BarObject.m; sourceTree = "<group>"; };
+		909365FF20E477CF008E4BCA /* JSContext+EDOThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JSContext+EDOThread.h"; sourceTree = "<group>"; };
+		9093660020E477CF008E4BCA /* JSContext+EDOThread.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "JSContext+EDOThread.m"; sourceTree = "<group>"; };
 		90FA922B20C667EE0096ED9D /* Endo-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Endo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90FA922E20C667EE0096ED9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		90FA922F20C667EE0096ED9D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -163,6 +166,8 @@
 				90FA925820C781700096ED9D /* EDOObjectTransfer.m */,
 				90FA924A20C66B790096ED9D /* NSObject+EDOObjectRef.h */,
 				90FA924B20C66B790096ED9D /* NSObject+EDOObjectRef.m */,
+				909365FF20E477CF008E4BCA /* JSContext+EDOThread.h */,
+				9093660020E477CF008E4BCA /* JSContext+EDOThread.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -345,6 +350,7 @@
 				90FA924C20C66B790096ED9D /* NSObject+EDOObjectRef.m in Sources */,
 				90FA924920C66B370096ED9D /* EDOExporter.m in Sources */,
 				90FA925920C781700096ED9D /* EDOObjectTransfer.m in Sources */,
+				9093660120E477CF008E4BCA /* JSContext+EDOThread.m in Sources */,
 				90FA923E20C667EE0096ED9D /* main.m in Sources */,
 				90FA924F20C66D2F0096ED9D /* EDOExportable.m in Sources */,
 				90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */,
