@@ -19,7 +19,7 @@
 
 @interface JSContext (EDOThread)
 
-@property (nonatomic, strong) NSMutableDictionary<NSString *, EDOObjectReference *> *references;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, EDOObjectReference *> *edo_references;
 
 - (nonnull JSValue *)edo_createMetaClass:(nonnull NSObject *)anObject;
 - (void)edo_storeScriptObject:(nonnull NSObject *)anObject scriptObject:(nonnull JSValue *)scriptObject;
