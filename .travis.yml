@@ -1,5 +1,5 @@
 osx_image: xcode9.4
 podfile: Podfile
 language: objective-c
-xcode_project: Endo-iOS.xcodeproj
+xcode_workspace: Endo-iOS.xcworkspace
 xcode_scheme: Endo-iOSTests
