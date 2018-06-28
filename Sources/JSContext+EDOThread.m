@@ -110,12 +110,24 @@ static int kReferenceTag;
 }
 
 - (void)edo_garbageCollect {
+#ifdef DEV
+    NSLog(@"GC Running");
+#endif
     NSMutableArray *removingKeys = [NSMutableArray array];
     @synchronized(self) {
         [self.references enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOObjectReference * _Nonnull obj, BOOL * _Nonnull stop) {
-            long retainCount = (long)CFGetRetainCount((__bridge CFTypeRef)(obj.value));
-            if (retainCount <= obj.value.edo_refCount) {
+            CFIndex retainCount = (CFIndex)CFGetRetainCount((__bridge CFTypeRef)(obj.value));
+            if (retainCount <= obj.value.edo_refCount + 1) {
+                [self.virtualMachine removeManagedReference:obj.soManagedValue withOwner:self];
+            }
+            else {
+                [self.virtualMachine addManagedReference:obj.soManagedValue withOwner:self];
+            }
+            if (retainCount <= obj.value.edo_refCount + 1 && obj.soManagedValue.value == nil) {
                 [removingKeys addObject:key];
+#ifdef DEV
+                NSLog(@"remove - %@, %@", key, obj.value.class);
+#endif
             }
         }];
         for (NSString *removeKey in removingKeys) {
