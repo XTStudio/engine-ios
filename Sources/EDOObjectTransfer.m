@@ -200,4 +200,203 @@
     return nsArguments.copy;
 }
 
++ (void)setArgumentToInvocation:(NSInvocation *)invocation idx:(unsigned long)idx obj:(id)obj argumentType:(char [256])argumentType {
+    if (strcmp(argumentType, "@") == 0) {
+        [invocation setArgument:&obj atIndex:idx];
+    }
+    else if (strcmp(argumentType, "i") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        int argument = [obj intValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "s") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        short argument = [obj shortValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "l") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        long argument = [obj longValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "q") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        long long argument = [obj longLongValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "I") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        unsigned int argument = [obj unsignedIntValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "S") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        unsigned short argument = [obj unsignedShortValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "L") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        unsigned long argument = [obj unsignedLongValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "Q") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        unsigned long long argument = [obj unsignedLongLongValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "f") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        float argument = [obj floatValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "d") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        double argument = [obj doubleValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else if (strcmp(argumentType, "B") == 0 && [obj isKindOfClass:[NSNumber class]]) {
+        bool argument = [obj boolValue];
+        [invocation setArgument:&argument atIndex:idx];
+    }
+    else {
+        if ([obj isKindOfClass:[NSDictionary class]]) {
+            NSString *objcType = [NSString stringWithUTF8String:argumentType];
+            if ([objcType hasPrefix:@"{CGRect"]) {
+                CGRect argument = CGRectMake([obj[@"x"] floatValue],
+                                             [obj[@"y"] floatValue],
+                                             [obj[@"width"] floatValue],
+                                             [obj[@"height"] floatValue]);
+                [invocation setArgument:&argument atIndex:idx];
+            }
+            else if ([objcType hasPrefix:@"{CGSize"]) {
+                CGSize argument = CGSizeMake([obj[@"width"] floatValue],
+                                             [obj[@"height"] floatValue]);
+                [invocation setArgument:&argument atIndex:idx];
+            }
+            else if ([objcType hasPrefix:@"{CGPoint"]) {
+                CGPoint argument = CGPointMake([obj[@"x"] floatValue],
+                                               [obj[@"y"] floatValue]);
+                [invocation setArgument:&argument atIndex:idx];
+            }
+            else if ([objcType hasPrefix:@"{CGAffineTransform"]) {
+                CGAffineTransform argument = CGAffineTransformMake([obj[@"a"] floatValue],
+                                                                   [obj[@"b"] floatValue],
+                                                                   [obj[@"c"] floatValue],
+                                                                   [obj[@"d"] floatValue],
+                                                                   [obj[@"tx"] floatValue],
+                                                                   [obj[@"ty"] floatValue]);
+                [invocation setArgument:&argument atIndex:idx];
+            }
+            else if ([objcType hasPrefix:@"{UIEdgeInsets"]) {
+                UIEdgeInsets argument = UIEdgeInsetsMake([obj[@"top"] floatValue],
+                                                         [obj[@"left"] floatValue],
+                                                         [obj[@"bottom"] floatValue],
+                                                         [obj[@"right"] floatValue]);
+                [invocation setArgument:&argument atIndex:idx];
+            }
+            else if ([objcType hasPrefix:@"{NSRange"]) {
+                NSRange argument = NSMakeRange([obj[@"location"] floatValue],
+                                               [obj[@"length"] floatValue]);
+                [invocation setArgument:&argument atIndex:idx];
+            }
+            else {
+                [invocation setArgument:&obj atIndex:idx];
+            }
+        }
+        else {
+            [invocation setArgument:&obj atIndex:idx];
+        }
+    }
+}
+
++ (JSValue *)getReturnValueFromInvocation:(NSInvocation *)invocation valueType:(char [256])ret context:(JSContext *)context {
+    if (strcmp(ret, "v") != 0) {
+        if (strcmp(ret, "i") == 0) {
+            int tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "s") == 0) {
+            short tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "l") == 0) {
+            long tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "q") == 0) {
+            long long tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "I") == 0) {
+            unsigned int tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "S") == 0) {
+            unsigned short tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "L") == 0) {
+            unsigned long tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "Q") == 0) {
+            unsigned long long tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "f") == 0) {
+            float tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "d") == 0) {
+            double tempResult;
+            [invocation getReturnValue:&tempResult];
+            return (JSValue *)@(tempResult);
+        }
+        else if (strcmp(ret, "b") == 0) {
+            BOOL tempResult;
+            [invocation getReturnValue:&tempResult];
+            return [JSValue valueWithBool:tempResult inContext:context];
+        }
+        else if (strcmp(ret, "@") == 0) {
+            void *tempResult = NULL;
+            [invocation getReturnValue:&tempResult];
+            NSObject *result = (__bridge NSObject *)tempResult;
+            return [EDOObjectTransfer convertToJSValueWithObject:result context:context];
+        }
+        else {
+            NSString *objcType = [NSString stringWithUTF8String:ret];
+            if ([objcType hasPrefix:@"{CGRect"]) {
+                CGRect tempResult;
+                [invocation getReturnValue:&tempResult];
+                return [JSValue valueWithRect:tempResult inContext:context];
+            }
+            else if ([objcType hasPrefix:@"{CGSize"]) {
+                CGSize tempResult;
+                [invocation getReturnValue:&tempResult];
+                return [JSValue valueWithSize:tempResult inContext:context];
+            }
+            else if ([objcType hasPrefix:@"{CGPoint"]) {
+                CGPoint tempResult;
+                [invocation getReturnValue:&tempResult];
+                return [JSValue valueWithPoint:tempResult inContext:context];
+            }
+            else if ([objcType hasPrefix:@"{CGAffineTransform"]) {
+                CGAffineTransform tempResult;
+                [invocation getReturnValue:&tempResult];
+                return (JSValue *)@{ @"a": @(tempResult.a), @"b": @(tempResult.b), @"c": @(tempResult.c), @"d": @(tempResult.d), @"tx": @(tempResult.tx), @"ty": @(tempResult.ty) };
+            }
+            else if ([objcType hasPrefix:@"{UIEdgeInsets"]) {
+                UIEdgeInsets tempResult;
+                [invocation getReturnValue:&tempResult];
+                return (JSValue *)@{ @"top": @(tempResult.top), @"left": @(tempResult.left), @"bottom": @(tempResult.bottom), @"right": @(tempResult.right) };
+            }
+            else if ([objcType hasPrefix:@"{NSRange"]) {
+                NSRange tempResult;
+                [invocation getReturnValue:&tempResult];
+                return (JSValue *)@{ @"location": @(tempResult.location), @"length": @(tempResult.length) };
+            }
+        }
+    }
+    return [JSValue valueWithUndefinedInContext:context];
+}
+
 @end

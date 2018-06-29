@@ -16,8 +16,9 @@
 
 @interface EDOExporter ()
 
-@property (nonatomic, strong) NSDictionary<NSString *, EDOExportable *> *exportables;
-@property (nonatomic, strong) NSMutableArray<NSValue *> *contexts;
+@property (nonatomic, copy) NSDictionary<NSString *, EDOExportable *> *exportables;
+@property (nonatomic, copy) NSSet<NSString *> *exportedKeys;
+@property (nonatomic, copy) NSArray<NSValue *> *contexts;
 
 @end
 
@@ -37,7 +38,6 @@
     self = [super init];
     if (self) {
         _exportables = @{};
-        _contexts = [NSMutableArray array];
         [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(runGC) userInfo:nil repeats:YES];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(runGC) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
     }
@@ -119,7 +119,9 @@
         }
     }
     if (shouldAddToContexts) {
-        [self.contexts addObject:[NSValue valueWithNonretainedObject:context]];
+        NSMutableArray *contexts = [self.contexts mutableCopy] ?: [NSMutableArray array];
+        [contexts addObject:[NSValue valueWithNonretainedObject:context]];
+        self.contexts = contexts;
     }
 }
 
@@ -171,6 +173,9 @@
             obj.exportedProps = mutableProps.copy;
         }
     }];
+    NSMutableSet *exportedKeys = [self.exportedKeys mutableCopy] ?: [NSMutableSet set];
+    [exportedKeys addObject:[NSString stringWithFormat:@"%@.%@", NSStringFromClass(clazz), propName]];
+    self.exportedKeys = exportedKeys;
 }
 
 - (void)bindMethodToJavaScript:(Class)clazz selector:(SEL)aSelector {
@@ -230,6 +235,9 @@
             obj.exportedMethods = exportedMethods.copy;
         }
     }];
+    NSMutableSet *exportedKeys = [self.exportedKeys mutableCopy] ?: [NSMutableSet set];
+    [exportedKeys addObject:[NSString stringWithFormat:@"%@.(%@)", NSStringFromClass(clazz), selectorName]];
+    self.exportedKeys = exportedKeys;
 }
 
 - (void)exportScriptToJavaScript:(Class)clazz script:(NSString *)script {
@@ -263,6 +271,9 @@
 - (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner {
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
+        if (![self.exportedKeys containsObject:[NSString stringWithFormat:@"%@.%@", NSStringFromClass(ownerObject.class), name]]) {
+            return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+        }
         @try {
             id returnValue = [ownerObject valueForKey:name];
             return [EDOObjectTransfer convertToJSValueWithObject:returnValue context:owner.context];
@@ -274,6 +285,9 @@
 - (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value owner:(JSValue *)owner {
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
+        if (![self.exportedKeys containsObject:[NSString stringWithFormat:@"%@.%@", NSStringFromClass(ownerObject.class), name]]) {
+            return;
+        }
         @try {
             char ret[256];
             method_getReturnType(class_getInstanceMethod(ownerObject.class, NSSelectorFromString(name)), ret, 256);
@@ -289,6 +303,9 @@
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     SEL selector = NSSelectorFromString(name);
     if ([ownerObject isKindOfClass:[NSObject class]]) {
+        if (![self.exportedKeys containsObject:[NSString stringWithFormat:@"%@.(%@)", NSStringFromClass(ownerObject.class), name]]) {
+            return [JSValue valueWithUndefinedInContext:owner.context];
+        }
         @try {
             char ret[256];
             method_getReturnType(class_getInstanceMethod(ownerObject.class, selector), ret, 256);
@@ -298,67 +315,13 @@
             [arguments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 char argumentType[256] = {};
                 method_getArgumentType(class_getInstanceMethod([ownerObject class], selector), (unsigned int)(idx + 2), argumentType, 256);
-                if (strcmp(argumentType, "@") == 0) {
-                    [invocation setArgument:&obj atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "i") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    int argument = [obj intValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "s") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    short argument = [obj shortValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "l") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    long argument = [obj longValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "q") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    long long argument = [obj longLongValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "I") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    unsigned int argument = [obj unsignedIntValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "S") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    unsigned short argument = [obj unsignedShortValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "L") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    unsigned long argument = [obj unsignedLongValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "Q") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    unsigned long long argument = [obj unsignedLongLongValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "f") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    float argument = [obj floatValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "d") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    double argument = [obj doubleValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else if (strcmp(argumentType, "B") == 0 && [obj isKindOfClass:[NSNumber class]]) {
-                    bool argument = [obj boolValue];
-                    [invocation setArgument:&argument atIndex:idx + 2];
-                }
-                else {
-                    [invocation setArgument:&obj atIndex:idx + 2];
-                }
+                [EDOObjectTransfer setArgumentToInvocation:invocation idx:idx + 2 obj:obj argumentType:argumentType];
             }];
             [invocation invoke];
-            if (strcmp(ret, "v") != 0) {
-                void *tempResult = NULL;
-                [invocation getReturnValue:&tempResult];
-                NSObject *result = (__bridge NSObject *)tempResult;
-                return [EDOObjectTransfer convertToJSValueWithObject:result context:owner.context];
-            }
+            return [EDOObjectTransfer getReturnValueFromInvocation:invocation valueType:ret context:owner.context];
         } @catch (NSException *exception) { } @finally { }
     }
-    return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+    return [JSValue valueWithUndefinedInContext:owner.context];
 }
 
 - (void)addListenerWithName:(NSString *)name owner:(JSValue *)owner {

@@ -10,6 +10,7 @@
 
 @interface FooObject : NSObject
 
+@property (nonatomic, assign) CGFloat privateValue;
 @property (nonatomic, assign) BOOL barCalled;
 @property (nonatomic, assign) BOOL fooBarCalled;
 @property (nonatomic, assign) BOOL fooBarArgumentsCalled;
@@ -23,5 +24,7 @@
 - (void)edo_fooBarWithString:(NSString *)aString andView:(UIView *)aView;
 - (void)edo_fooBar:(NSString *)aString andView:(UIView *)aView;
 - (void)methodWithCallback:(id (^)(NSArray *))callback;
+- (void)structMethod:(CGRect)rect;
+- (CGSize)privateMethod;
 
 @end

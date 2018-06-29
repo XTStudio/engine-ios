@@ -92,6 +92,9 @@
     XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.fooBarCalled"] toBool]);
     XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.fooBarArgumentsCalled"] toBool]);
     XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.fooBarArgumentsAliasCalled"] toBool]);
+    [self.context evaluateScript:@"var testStructMethod = new FooObject"];
+    [self.context evaluateScript:@"testStructMethod.structMethod({x: 0, y: 0, width: 100, height: 200})"];
+    XCTAssertTrue([[self.context evaluateScript:@"testStructMethod.barCalled"] toBool]);
 }
 
 - (void)testMethodBinding {
@@ -114,6 +117,13 @@
     [obj edo_emitWithEventName:@"click" arguments:@[obj]];
     XCTAssertTrue(obj.barCalled);
     XCTAssertEqual([[obj edo_valueWithEventName:@"clickTime" arguments:nil] integerValue], 1);
+}
+
+- (void)testInvalidAccess {
+    JSValue *privateValue = [self.context evaluateScript:@"var testInvalidAccess = new FooObject; ENDO.valueWithPropertyNameOwner('privateValue',testInvalidAccess)"];
+    JSValue *privateMethodValue = [self.context evaluateScript:@"ENDO.callMethodWithNameArgumentsOwner('privateMethod', [],testInvalidAccess)"];
+    XCTAssertTrue(privateValue.isUndefined);
+    XCTAssertTrue(privateMethodValue.isUndefined);
 }
 
 @end

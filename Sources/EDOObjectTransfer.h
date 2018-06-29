@@ -26,4 +26,8 @@
 
 + (NSArray *)convertToNSArgumentsWithJSArguments:(NSArray *)jsArguments owner:(JSValue *)owner;
 
++ (void)setArgumentToInvocation:(NSInvocation *)invocation idx:(unsigned long)idx obj:(id)obj argumentType:(char[256])argumentType;
+
++ (JSValue *)getReturnValueFromInvocation:(NSInvocation *)invocation valueType:(char[256])valueType context:(JSContext *)context;
+
 @end

@@ -33,6 +33,7 @@
     EDO_EXPORT_METHOD(edo_fooBarWithString:andView:);
     EDO_EXPORT_METHOD_ALIAS(edo_fooBar:andView:, @"fooBarWithString");
     EDO_EXPORT_METHOD(methodWithCallback:)
+    EDO_EXPORT_METHOD(structMethod:)
 }
 
 - (instancetype)init
@@ -73,6 +74,16 @@
     if ([result isKindOfClass:[NSNumber class]] && [result integerValue] == 1) {
         self.barCalled = YES;
     }
+}
+
+- (void)structMethod:(CGRect)rect {
+    if (CGRectGetWidth(rect) == 100 && CGRectGetHeight(rect) == 200) {
+        self.barCalled = YES;
+    }
+}
+
+- (CGSize)privateMethod {
+    return CGSizeMake(100, 100);
 }
 
 @end
