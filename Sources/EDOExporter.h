@@ -14,6 +14,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 
 #define EDO_EXPORT_CLASS(A, B) [[EDOExporter sharedExporter] exportClass:[self class] name:A superName:B];
 #define EDO_EXPORT_INITIALIZER(BLOCK) [[EDOExporter sharedExporter] exportInitializer:[self class] initializer:^id(NSArray *arguments) BLOCK ];
+#define EDO_EXPORT_CONST(A, B) [[EDOExporter sharedExporter] exportConst:A value:B];
 #define EDO_EXPORT_PROPERTY(A) [[EDOExporter sharedExporter] exportProperty:[self class] propName:A];
 #define EDO_BIND_METHOD(A) [[EDOExporter sharedExporter] bindMethodToJavaScript:[self class] selector:@selector(A)];
 #define EDO_EXPORT_METHOD(A) [[EDOExporter sharedExporter] exportMethodToJavaScript:[self class] selector:@selector(A)];
@@ -39,15 +40,16 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 + (EDOExporter *)sharedExporter;
 
 - (void)exportWithContext:(nonnull JSContext *)context;
-- (void)exportEnum:(NSString *)name values:(NSDictionary *)values;
-- (void)exportClass:(Class)clazz name:(nonnull NSString *)name superName:(NSString *)superName;
+- (void)exportEnum:(nonnull NSString *)name values:(nonnull NSDictionary *)values;
+- (void)exportConst:(nonnull NSString *)name value:(nonnull id)value;
+- (void)exportClass:(Class)clazz name:(nonnull NSString *)name superName:(nullable NSString *)superName;
 - (void)exportInitializer:(Class)clazz initializer:(nonnull EDOInitializer)initializer;
 - (void)exportProperty:(Class)clazz propName:(nonnull NSString *)propName;
 - (void)bindMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;
 - (void)exportMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;
-- (void)exportMethodToJavaScript:(Class)clazz selector:(SEL)aSelector jsName:(NSString *)jsName;
-- (void)exportScriptToJavaScript:(Class)clazz script:(NSString *)script;
-- (nullable id)nsValueWithJSValue:(JSValue *)value;
+- (void)exportMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector jsName:(nullable NSString *)jsName;
+- (void)exportScriptToJavaScript:(Class)clazz script:(nonnull NSString *)script;
+- (nullable id)nsValueWithJSValue:(nonnull JSValue *)value;
 - (nullable id)nsValueWithObjectRef:(nonnull NSString *)objectRef;
 - (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject
                                      context:(nonnull JSContext *)context

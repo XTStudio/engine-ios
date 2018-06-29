@@ -32,8 +32,9 @@
     EDO_EXPORT_METHOD(edo_fooBar);
     EDO_EXPORT_METHOD(edo_fooBarWithString:andView:);
     EDO_EXPORT_METHOD_ALIAS(edo_fooBar:andView:, @"fooBarWithString");
-    EDO_EXPORT_METHOD(methodWithCallback:)
-    EDO_EXPORT_METHOD(structMethod:)
+    EDO_EXPORT_METHOD(methodWithCallback:);
+    EDO_EXPORT_METHOD(structMethod:);
+    EDO_EXPORT_CONST(@"FooConst", @"const value");
 }
 
 - (instancetype)init

@@ -17,6 +17,7 @@
 @interface EDOExporter ()
 
 @property (nonatomic, copy) NSDictionary<NSString *, EDOExportable *> *exportables;
+@property (nonatomic, copy) NSDictionary<NSString *, id> *exportedConstants;
 @property (nonatomic, copy) NSSet<NSString *> *exportedKeys;
 @property (nonatomic, copy) NSArray<NSValue *> *contexts;
 
@@ -111,6 +112,9 @@
     }
     context[@"ENDO"] = [EDOExporter sharedExporter];
     [context evaluateScript:script];
+    [self.exportedConstants enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        context[key] = [EDOObjectTransfer convertToJSValueWithObject:obj context:context];
+    }];
     BOOL shouldAddToContexts = YES;
     for (NSValue *contextWrapper in self.contexts) {
         if (contextWrapper.nonretainedObjectValue == context) {
@@ -143,6 +147,12 @@
     NSMutableDictionary *mutableExportables = [self.exportables mutableCopy];
     [mutableExportables setObject:exportable forKey:name];
     self.exportables = mutableExportables.copy;
+}
+
+- (void)exportConst:(NSString *)name value:(id)value {
+    NSMutableDictionary *mutableExportedConstants = [self.exportedConstants mutableCopy] ?: [NSMutableDictionary dictionary];
+    [mutableExportedConstants setObject:value forKey:name];
+    self.exportedConstants = mutableExportedConstants;
 }
 
 - (void)exportClass:(Class)clazz name:(NSString *)name superName:(NSString *)superName {

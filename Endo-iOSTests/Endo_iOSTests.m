@@ -45,6 +45,10 @@
     XCTAssertTrue(obj.barCalled);
 }
 
+- (void)testConst {
+    XCTAssert([[[self.context evaluateScript:@"FooConst"] toString] isEqualToString:@"const value"]);
+}
+
 - (void)testNumberProperty {
     [self.context evaluateScript:@"var testNumberProperty = new UIView"];
     [self.context evaluateScript:@"testNumberProperty.alpha = 0.5"];
