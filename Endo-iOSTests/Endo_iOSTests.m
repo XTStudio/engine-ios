@@ -122,8 +122,10 @@
 - (void)testInvalidAccess {
     JSValue *privateValue = [self.context evaluateScript:@"var testInvalidAccess = new FooObject; ENDO.valueWithPropertyNameOwner('privateValue',testInvalidAccess)"];
     JSValue *privateMethodValue = [self.context evaluateScript:@"ENDO.callMethodWithNameArgumentsOwner('privateMethod', [],testInvalidAccess)"];
+    JSValue *validValue = [self.context evaluateScript:@"var testValidAccess = new BarObject; testValidAccess.barCalled"];
     XCTAssertTrue(privateValue.isUndefined);
     XCTAssertTrue(privateMethodValue.isUndefined);
+    XCTAssertTrue(validValue.isBoolean);
 }
 
 @end

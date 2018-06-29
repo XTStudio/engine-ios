@@ -271,7 +271,7 @@
 - (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner {
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
-        if (![self.exportedKeys containsObject:[NSString stringWithFormat:@"%@.%@", NSStringFromClass(ownerObject.class), name]]) {
+        if (![self checkExported:ownerObject.class exportedKey:name]) {
             return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
         }
         @try {
@@ -285,7 +285,7 @@
 - (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value owner:(JSValue *)owner {
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
-        if (![self.exportedKeys containsObject:[NSString stringWithFormat:@"%@.%@", NSStringFromClass(ownerObject.class), name]]) {
+        if (![self checkExported:ownerObject.class exportedKey:name]) {
             return;
         }
         @try {
@@ -303,8 +303,8 @@
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     SEL selector = NSSelectorFromString(name);
     if ([ownerObject isKindOfClass:[NSObject class]]) {
-        if (![self.exportedKeys containsObject:[NSString stringWithFormat:@"%@.(%@)", NSStringFromClass(ownerObject.class), name]]) {
-            return [JSValue valueWithUndefinedInContext:owner.context];
+        if (![self checkExported:ownerObject.class exportedKey:[NSString stringWithFormat:@"(%@)", name]]) {
+            return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
         }
         @try {
             char ret[256];
@@ -378,6 +378,22 @@
         }
     }
     return results.copy;
+}
+
+- (BOOL)checkExported:(Class)clazz exportedKey:(NSString *)exportedKey {
+    Class cur = clazz;
+    while (cur != NSObject.class && cur != NULL) {
+        if ([self.exportedKeys containsObject:[NSString stringWithFormat:@"%@.%@", NSStringFromClass(cur), exportedKey]]) {
+            if (cur != clazz) {
+                NSMutableSet *exportedKeys = [self.exportedKeys mutableCopy] ?: [NSMutableSet set];
+                [exportedKeys addObject:[NSString stringWithFormat:@"%@.%@", NSStringFromClass(cur), exportedKey]];
+                self.exportedKeys = exportedKeys;
+            }
+            return YES;
+        }
+        cur = class_getSuperclass(cur);
+    }
+    return NO;
 }
 
 @end
