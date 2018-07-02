@@ -81,6 +81,12 @@
     XCTAssertTrue([self.context evaluateScript:@"testObjectProperty.view"].isUndefined);
 }
 
+- (void)testUnexportedSubclassObject {
+    [self.context evaluateScript:@"var testUnexportedSubclassObject = new BarObject"];
+    [self.context evaluateScript:@"var testUnexportedSubclassObjectReturnValue = testUnexportedSubclassObject.toXXX()"];
+    XCTAssertTrue([self.context evaluateScript:@"testUnexportedSubclassObjectReturnValue.uuuCalled"].isBoolean);
+}
+
 - (void)testEnumExports {
     XCTAssertEqual([[self.context evaluateScript:@"UIViewContentMode.top"] toNumber].integerValue, UIViewContentModeTop);
     XCTAssertEqual([[self.context evaluateScript:@"UIViewContentMode.right"] toNumber].integerValue, UIViewContentModeRight);

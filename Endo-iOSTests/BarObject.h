@@ -10,4 +10,6 @@
 
 @interface BarObject : FooObject
 
+@property (nonatomic, assign) BOOL uuuCalled;
+
 @end

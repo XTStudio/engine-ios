@@ -8,11 +8,14 @@
 
 #import "BarObject.h"
 #import "EDOExporter.h"
+#import "XXXObject.h"
 
 @implementation BarObject
 
 + (void)load {
     EDO_EXPORT_CLASS(@"BarObject", @"FooObject");
+    EDO_EXPORT_PROPERTY(@"uuuCalled");
+    EDO_EXPORT_METHOD(toXXX);
 }
 
 - (instancetype)init
@@ -22,6 +25,10 @@
         
     }
     return self;
+}
+
+- (XXXObject *)toXXX {
+    return [[XXXObject alloc] init];
 }
 
 @end
