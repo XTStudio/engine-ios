@@ -31,24 +31,24 @@
     else if ([anObject isKindOfClass:[NSValue class]]) {
         NSValue *nsValue = (id)anObject;
         NSString *objcType = [NSString stringWithUTF8String:[nsValue objCType]];
-        if ([objcType hasPrefix:@"{CGRect"]) {
+        if ([objcType hasPrefix:@"{CGRect"] || [objcType hasPrefix:@"{_CGRect"]) {
             return [JSValue valueWithRect:[nsValue CGRectValue] inContext:context ?: [JSContext currentContext]];
         }
-        else if ([objcType hasPrefix:@"{CGSize"]) {
+        else if ([objcType hasPrefix:@"{CGSize"] || [objcType hasPrefix:@"{_CGSize"]) {
             return [JSValue valueWithSize:[nsValue CGSizeValue] inContext:context ?: [JSContext currentContext]];
         }
-        else if ([objcType hasPrefix:@"{CGPoint"]) {
+        else if ([objcType hasPrefix:@"{CGPoint"] || [objcType hasPrefix:@"{_CGPoint"]) {
             return [JSValue valueWithPoint:[nsValue CGPointValue] inContext:context ?: [JSContext currentContext]];
         }
-        else if ([objcType hasPrefix:@"{CGAffineTransform"]) {
+        else if ([objcType hasPrefix:@"{CGAffineTransform"] || [objcType hasPrefix:@"{_CGAffineTransform"]) {
             CGAffineTransform transform = [nsValue CGAffineTransformValue];
             return (JSValue *)@{ @"a": @(transform.a), @"b": @(transform.b), @"c": @(transform.c), @"d": @(transform.d), @"tx": @(transform.tx), @"ty": @(transform.ty) };
         }
-        else if ([objcType hasPrefix:@"{UIEdgeInsets"]) {
+        else if ([objcType hasPrefix:@"{UIEdgeInsets"] || [objcType hasPrefix:@"{_UIEdgeInsets"]) {
             UIEdgeInsets edgeInsets = [nsValue UIEdgeInsetsValue];
             return (JSValue *)@{ @"top": @(edgeInsets.top), @"left": @(edgeInsets.left), @"bottom": @(edgeInsets.bottom), @"right": @(edgeInsets.right) };
         }
-        else if ([objcType hasPrefix:@"{NSRange"]) {
+        else if ([objcType hasPrefix:@"{NSRange"] || [objcType hasPrefix:@"{_NSRange"]) {
             NSRange range = [nsValue rangeValue];
             return (JSValue *)@{ @"location": @(range.location), @"length": @(range.length) };
         }
@@ -86,16 +86,16 @@
     if (anValue.isUndefined) {
         return nil;
     }
-    else if ([eageringType hasPrefix:@"{CGRect"]) {
+    else if ([eageringType hasPrefix:@"{CGRect"] || [eageringType hasPrefix:@"{_CGRect"]) {
         return [NSValue valueWithCGRect:[anValue toRect]];
     }
-    else if ([eageringType hasPrefix:@"{CGSize"]) {
+    else if ([eageringType hasPrefix:@"{CGSize"] || [eageringType hasPrefix:@"{_CGSize"]) {
         return [NSValue valueWithCGSize:[anValue toSize]];
     }
-    else if ([eageringType hasPrefix:@"{CGPoint"]) {
+    else if ([eageringType hasPrefix:@"{CGPoint"] || [eageringType hasPrefix:@"{_CGPoint"]) {
         return [NSValue valueWithCGPoint:[anValue toPoint]];
     }
-    else if ([eageringType hasPrefix:@"{CGAffineTransform"] && [anValue isObject]) {
+    else if (([eageringType hasPrefix:@"{CGAffineTransform"] || [eageringType hasPrefix:@"{_CGAffineTransform"]) && [anValue isObject]) {
         NSDictionary *dict = [anValue toDictionary];
         return [NSValue valueWithCGAffineTransform:CGAffineTransformMake([dict[@"a"] floatValue],
                                                                          [dict[@"b"] floatValue],
@@ -104,14 +104,14 @@
                                                                          [dict[@"tx"] floatValue],
                                                                          [dict[@"ty"] floatValue])];
     }
-    else if ([eageringType hasPrefix:@"{UIEdgeInsets"] && [anValue isObject]) {
+    else if (([eageringType hasPrefix:@"{UIEdgeInsets"] || [eageringType hasPrefix:@"{_UIEdgeInsets"]) && [anValue isObject]) {
         NSDictionary *dict = [anValue toDictionary];
         return [NSValue valueWithUIEdgeInsets:UIEdgeInsetsMake([dict[@"top"] floatValue],
                                                                [dict[@"left"] floatValue],
                                                                [dict[@"bottom"] floatValue],
                                                                [dict[@"right"] floatValue])];
     }
-    else if ([eageringType hasPrefix:@"{NSRange"] && [anValue isObject]) {
+    else if (([eageringType hasPrefix:@"{NSRange"] || [eageringType hasPrefix:@"{_NSRange"]) && [anValue isObject]) {
         NSDictionary *dict = [anValue toDictionary];
         return [NSValue valueWithRange:NSMakeRange([dict[@"location"] floatValue],
                                                    [dict[@"length"] floatValue])];
@@ -251,24 +251,24 @@
     else {
         if ([obj isKindOfClass:[NSDictionary class]]) {
             NSString *objcType = [NSString stringWithUTF8String:argumentType];
-            if ([objcType hasPrefix:@"{CGRect"]) {
+            if ([objcType hasPrefix:@"{CGRect"] || [objcType hasPrefix:@"{_CGRect"]) {
                 CGRect argument = CGRectMake([obj[@"x"] floatValue],
                                              [obj[@"y"] floatValue],
                                              [obj[@"width"] floatValue],
                                              [obj[@"height"] floatValue]);
                 [invocation setArgument:&argument atIndex:idx];
             }
-            else if ([objcType hasPrefix:@"{CGSize"]) {
+            else if ([objcType hasPrefix:@"{CGSize"] || [objcType hasPrefix:@"{_CGSize"]) {
                 CGSize argument = CGSizeMake([obj[@"width"] floatValue],
                                              [obj[@"height"] floatValue]);
                 [invocation setArgument:&argument atIndex:idx];
             }
-            else if ([objcType hasPrefix:@"{CGPoint"]) {
+            else if ([objcType hasPrefix:@"{CGPoint"] || [objcType hasPrefix:@"{_CGPoint"]) {
                 CGPoint argument = CGPointMake([obj[@"x"] floatValue],
                                                [obj[@"y"] floatValue]);
                 [invocation setArgument:&argument atIndex:idx];
             }
-            else if ([objcType hasPrefix:@"{CGAffineTransform"]) {
+            else if ([objcType hasPrefix:@"{CGAffineTransform"] || [objcType hasPrefix:@"{_CGAffineTransform"]) {
                 CGAffineTransform argument = CGAffineTransformMake([obj[@"a"] floatValue],
                                                                    [obj[@"b"] floatValue],
                                                                    [obj[@"c"] floatValue],
@@ -277,14 +277,14 @@
                                                                    [obj[@"ty"] floatValue]);
                 [invocation setArgument:&argument atIndex:idx];
             }
-            else if ([objcType hasPrefix:@"{UIEdgeInsets"]) {
+            else if ([objcType hasPrefix:@"{UIEdgeInsets"] || [objcType hasPrefix:@"{_UIEdgeInsets"]) {
                 UIEdgeInsets argument = UIEdgeInsetsMake([obj[@"top"] floatValue],
                                                          [obj[@"left"] floatValue],
                                                          [obj[@"bottom"] floatValue],
                                                          [obj[@"right"] floatValue]);
                 [invocation setArgument:&argument atIndex:idx];
             }
-            else if ([objcType hasPrefix:@"{NSRange"]) {
+            else if ([objcType hasPrefix:@"{NSRange"] || [objcType hasPrefix:@"{_NSRange"]) {
                 NSRange argument = NSMakeRange([obj[@"location"] floatValue],
                                                [obj[@"length"] floatValue]);
                 [invocation setArgument:&argument atIndex:idx];
@@ -364,32 +364,32 @@
         }
         else {
             NSString *objcType = [NSString stringWithUTF8String:ret];
-            if ([objcType hasPrefix:@"{CGRect"]) {
+            if ([objcType hasPrefix:@"{CGRect"] || [objcType hasPrefix:@"{_CGRect"]) {
                 CGRect tempResult;
                 [invocation getReturnValue:&tempResult];
                 return [JSValue valueWithRect:tempResult inContext:context];
             }
-            else if ([objcType hasPrefix:@"{CGSize"]) {
+            else if ([objcType hasPrefix:@"{CGSize"] || [objcType hasPrefix:@"{_CGSize"]) {
                 CGSize tempResult;
                 [invocation getReturnValue:&tempResult];
                 return [JSValue valueWithSize:tempResult inContext:context];
             }
-            else if ([objcType hasPrefix:@"{CGPoint"]) {
+            else if ([objcType hasPrefix:@"{CGPoint"] || [objcType hasPrefix:@"{_CGPoint"]) {
                 CGPoint tempResult;
                 [invocation getReturnValue:&tempResult];
                 return [JSValue valueWithPoint:tempResult inContext:context];
             }
-            else if ([objcType hasPrefix:@"{CGAffineTransform"]) {
+            else if ([objcType hasPrefix:@"{CGAffineTransform"] || [objcType hasPrefix:@"{_CGAffineTransform"]) {
                 CGAffineTransform tempResult;
                 [invocation getReturnValue:&tempResult];
                 return (JSValue *)@{ @"a": @(tempResult.a), @"b": @(tempResult.b), @"c": @(tempResult.c), @"d": @(tempResult.d), @"tx": @(tempResult.tx), @"ty": @(tempResult.ty) };
             }
-            else if ([objcType hasPrefix:@"{UIEdgeInsets"]) {
+            else if ([objcType hasPrefix:@"{UIEdgeInsets"] || [objcType hasPrefix:@"{_UIEdgeInsets"]) {
                 UIEdgeInsets tempResult;
                 [invocation getReturnValue:&tempResult];
                 return (JSValue *)@{ @"top": @(tempResult.top), @"left": @(tempResult.left), @"bottom": @(tempResult.bottom), @"right": @(tempResult.right) };
             }
-            else if ([objcType hasPrefix:@"{NSRange"]) {
+            else if ([objcType hasPrefix:@"{NSRange"] || [objcType hasPrefix:@"{_NSRange"]) {
                 NSRange tempResult;
                 [invocation getReturnValue:&tempResult];
                 return (JSValue *)@{ @"location": @(tempResult.location), @"length": @(tempResult.length) };
