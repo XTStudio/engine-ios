@@ -3,6 +3,6 @@ podfile: Podfile
 language: objective-c
 jobs:
   include:
-    -script: xcodebuild -workspace Endo-iOS.xcworkspace -scheme "Endo-iOSTests" -destination 'platform=iOS Simulator,name=iPhone 6,OS=9.0' test
-    -script: xcodebuild -workspace Endo-iOS.xcworkspace -scheme "Endo-iOSTests" -destination 'platform=iOS Simulator,name=iPhone 6,OS=10.0' test
-    -script: xcodebuild -workspace Endo-iOS.xcworkspace -scheme "Endo-iOSTests" -destination 'platform=iOS Simulator,name=iPhone 6,OS=11.0' test
+    - script: xcodebuild -workspace Endo-iOS.xcworkspace -scheme "Endo-iOSTests" -destination 'platform=iOS Simulator,name=iPhone 6,OS=9.0' test
+    - script: xcodebuild -workspace Endo-iOS.xcworkspace -scheme "Endo-iOSTests" -destination 'platform=iOS Simulator,name=iPhone 6,OS=10.0' test
+    - script: xcodebuild -workspace Endo-iOS.xcworkspace -scheme "Endo-iOSTests" -destination 'platform=iOS Simulator,name=iPhone 6,OS=11.0' test
