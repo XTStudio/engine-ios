@@ -12,10 +12,11 @@
 @interface EDOExportable : NSObject
 
 @property (nonatomic, assign) Class clazz;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *superName;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *superName;
 @property (nonatomic, copy) EDOInitializer initializer;
 @property (nonatomic, copy) NSArray<NSString *> *exportedProps;
+@property (nonatomic, copy) NSArray<NSString *> *enumerableProps;
 @property (nonatomic, copy) NSArray<NSString *> *bindedMethods;
 @property (nonatomic, copy) NSDictionary<NSString *, NSString *> *exportedMethods;
 @property (nonatomic, copy) NSArray<NSString *> *exportedScripts;
