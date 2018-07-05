@@ -318,23 +318,27 @@
             method_getReturnType(class_getInstanceMethod(ownerObject.class, NSSelectorFromString(name)), ret, 256);
             if (strcmp(ret, "@") == 0) {
                 objc_property_t property = class_getProperty(ownerObject.class, [name UTF8String]);
-                const char *attributes = property_getAttributes(property);
-                //printf("attributes=%s\n", attributes);
-                char buffer[1 + strlen(attributes)];
-                strcpy(buffer, attributes);
-                char *state = buffer, *attribute;
-                while ((attribute = strsep(&state, ",")) != NULL) {
-                    if (attribute[0] == 'T' && attribute[1] != '@') {
-                        NSString *name = [[NSString alloc] initWithBytes:attribute + 1 length:strlen(attribute) - 1 encoding:NSASCIIStringEncoding];
-                        ocClass = name;
+                if (property != NULL) {
+                    const char *attributes = property_getAttributes(property);
+                    char buffer[1 + strlen(attributes)];
+                    strcpy(buffer, attributes);
+                    char *state = buffer, *attribute;
+                    while ((attribute = strsep(&state, ",")) != NULL) {
+                        if (attribute[0] == 'T' && attribute[1] != '@') {
+                            NSString *name = [[NSString alloc] initWithBytes:attribute + 1 length:strlen(attribute) - 1 encoding:NSASCIIStringEncoding];
+                            ocClass = name;
+                        }
+                        else if (attribute[0] == 'T' && attribute[1] == '@' && strlen(attribute) == 2) {
+                            ocClass = @"@";
+                        }
+                        else if (attribute[0] == 'T' && attribute[1] == '@') {
+                            NSString *name = [[NSString alloc] initWithBytes:attribute + 3 length:strlen(attribute) - 4 encoding:NSASCIIStringEncoding];
+                            ocClass = name;
+                        }
                     }
-                    else if (attribute[0] == 'T' && attribute[1] == '@' && strlen(attribute) == 2) {
-                        ocClass = @"@";
-                    }
-                    else if (attribute[0] == 'T' && attribute[1] == '@') {
-                        NSString *name = [[NSString alloc] initWithBytes:attribute + 3 length:strlen(attribute) - 4 encoding:NSASCIIStringEncoding];
-                        ocClass = name;
-                    }
+                }
+                else {
+                    ocClass = [NSString stringWithUTF8String:ret];
                 }
             }
             else {
