@@ -2,7 +2,7 @@
 //  main.m
 //  Endo-iOS
 //
-//  Created by 崔明辉 on 2018/6/5.
+//  Created by PonyCui on 2018/6/5.
 //  Copyright © 2018年 UED Center, YY Inc. All rights reserved.
 //
 
