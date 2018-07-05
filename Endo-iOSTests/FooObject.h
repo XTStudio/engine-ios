@@ -17,6 +17,9 @@
 @property (nonatomic, assign) BOOL fooBarArgumentsAliasCalled;
 @property (nonatomic, strong) UIView *view;
 @property (nonatomic, assign) CGFloat edo_aFloat;
+@property (nonatomic, copy) NSArray *arrProperty;
+@property (nonatomic, copy) NSDictionary *dictProperty;
+@property (nonatomic, assign) BOOL readonlyProperty;
 
 - (void)bindingMethod;
 - (void)bar;

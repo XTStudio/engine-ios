@@ -81,6 +81,29 @@
     XCTAssertTrue([self.context evaluateScript:@"testObjectProperty.view"].isUndefined);
 }
 
+- (void)testArrayProperty {
+    [self.context evaluateScript:@"var testArrayProperty = new FooObject"];
+    [self.context evaluateScript:@"testArrayProperty.arrProperty = ['A', 'B', 'C']"];
+    FooObject *obj = [[EDOExporter sharedExporter] nsValueWithJSValue:[self.context evaluateScript:@"testArrayProperty"]];
+    XCTAssertTrue([obj.arrProperty[0] isEqualToString:@"A"]);
+    XCTAssertTrue([obj.arrProperty[1] isEqualToString:@"B"]);
+    XCTAssertTrue([obj.arrProperty[2] isEqualToString:@"C"]);
+}
+
+- (void)testDictionaryProperty {
+    [self.context evaluateScript:@"var testDictionaryProperty = new FooObject"];
+    [self.context evaluateScript:@"testDictionaryProperty.dictProperty = {foo: 'foo value'}"];
+    FooObject *obj = [[EDOExporter sharedExporter] nsValueWithJSValue:[self.context evaluateScript:@"testDictionaryProperty"]];
+    XCTAssertTrue([obj.dictProperty[@"foo"] isEqualToString:@"foo value"]);
+}
+
+- (void)testReadonlyProperty {
+    [self.context evaluateScript:@"var testReadonlyProperty = new FooObject"];
+    [self.context evaluateScript:@"testReadonlyProperty.readonlyProperty = true"];
+    FooObject *obj = [[EDOExporter sharedExporter] nsValueWithJSValue:[self.context evaluateScript:@"testReadonlyProperty"]];
+    XCTAssertFalse(obj.readonlyProperty);
+}
+
 - (void)testUnexportedSubclassObject {
     [self.context evaluateScript:@"var testUnexportedSubclassObject = new BarObject"];
     [self.context evaluateScript:@"var testUnexportedSubclassObjectReturnValue = testUnexportedSubclassObject.toXXX()"];

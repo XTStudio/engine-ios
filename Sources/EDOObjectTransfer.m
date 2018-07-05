@@ -116,18 +116,6 @@
         return [NSValue valueWithRange:NSMakeRange([dict[@"location"] floatValue],
                                                    [dict[@"length"] floatValue])];
     }
-    else if (anValue.isObject) {
-        JSValue *metaClassValue = [anValue objectForKeyedSubscript:@"_meta_class"];
-        if (metaClassValue.isObject) {
-            NSDictionary *metaClassInfo = metaClassValue.toDictionary;
-            if ([metaClassInfo[@"objectRef"] isKindOfClass:[NSString class]]) {
-                return [[EDOExporter sharedExporter] nsValueWithObjectRef:metaClassInfo[@"objectRef"]] ?: anValue;
-            }
-        }
-        else {
-            return [self convertToNSDictionaryWithJSDictionary:anValue.toDictionary owner:owner];
-        }
-    }
     else if (anValue.isArray) {
         return [self convertToNSArgumentsWithJSArguments:anValue.toArray owner:owner];
     }
@@ -139,6 +127,18 @@
     }
     else if (anValue.isBoolean) {
         return anValue.toNumber;
+    }
+    else if (anValue.isObject) {
+        JSValue *metaClassValue = [anValue objectForKeyedSubscript:@"_meta_class"];
+        if (metaClassValue.isObject) {
+            NSDictionary *metaClassInfo = metaClassValue.toDictionary;
+            if ([metaClassInfo[@"objectRef"] isKindOfClass:[NSString class]]) {
+                return [[EDOExporter sharedExporter] nsValueWithObjectRef:metaClassInfo[@"objectRef"]] ?: anValue;
+            }
+        }
+        else {
+            return [self convertToNSDictionaryWithJSDictionary:anValue.toDictionary owner:owner];
+        }
     }
     return nil;
 }

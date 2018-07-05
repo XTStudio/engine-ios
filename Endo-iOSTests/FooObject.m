@@ -35,6 +35,9 @@
     EDO_EXPORT_METHOD(methodWithCallback:);
     EDO_EXPORT_METHOD(structMethod:);
     EDO_EXPORT_CONST(@"FooConst", @"const value");
+    EDO_EXPORT_PROPERTY(@"arrProperty");
+    EDO_EXPORT_PROPERTY(@"dictProperty");
+    EDO_EXPORT_READONLY_PROPERTY(@"readonlyProperty");
 }
 
 - (instancetype)init
