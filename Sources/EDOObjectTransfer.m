@@ -214,6 +214,9 @@
 
 + (void)setArgumentToInvocation:(NSInvocation *)invocation idx:(unsigned long)idx obj:(id)obj argumentType:(char [256])argumentType {
     if (strcmp(argumentType, "@") == 0) {
+        if ([obj isKindOfClass:[NSNull class]]) {
+            return;
+        }
         [invocation setArgument:&obj atIndex:idx];
     }
     else if (strcmp(argumentType, "i") == 0 && [obj isKindOfClass:[NSNumber class]]) {

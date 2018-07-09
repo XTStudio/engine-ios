@@ -122,11 +122,13 @@
     [self.context evaluateScript:@"testMethodExports.fooBarWithStringAndView('string value', new UIView)"];
     [self.context evaluateScript:@"testMethodExports.fooBarWithString('alias string value', new UIView)"];
     [self.context evaluateScript:@"testMethodExports.fooBarWithArrayBuffer(new Uint8Array([98,117,102,102,101,114,32,118,97,108,117,101]).buffer)"];
+    [self.context evaluateScript:@"testMethodExports.fooBarWithNil(undefined)"];
     XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.barCalled"] toBool]);
     XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.fooBarCalled"] toBool]);
     XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.fooBarArgumentsCalled"] toBool]);
     XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.fooBarArgumentsAliasCalled"] toBool]);
     XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.fooBarArrayBufferArgumentCalled"] toBool]);
+    XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.fooBarNilCalled"] toBool]);
     [self.context evaluateScript:@"var testStructMethod = new FooObject"];
     [self.context evaluateScript:@"testStructMethod.structMethod({x: 0, y: 0, width: 100, height: 200})"];
     XCTAssertTrue([[self.context evaluateScript:@"testStructMethod.barCalled"] toBool]);

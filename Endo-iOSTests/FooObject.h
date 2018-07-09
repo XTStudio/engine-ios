@@ -16,6 +16,7 @@
 @property (nonatomic, assign) BOOL fooBarArgumentsCalled;
 @property (nonatomic, assign) BOOL fooBarArrayBufferArgumentCalled;
 @property (nonatomic, assign) BOOL fooBarArgumentsAliasCalled;
+@property (nonatomic, assign) BOOL fooBarNilCalled;
 @property (nonatomic, strong) UIView *view;
 @property (nonatomic, assign) CGFloat edo_aFloat;
 @property (nonatomic, copy) NSArray *arrProperty;
@@ -28,6 +29,7 @@
 - (void)edo_fooBarWithString:(NSString *)aString andView:(UIView *)aView;
 - (void)edo_fooBar:(NSString *)aString andView:(UIView *)aView;
 - (void)edo_fooBarWithArrayBuffer:(NSData *)bufferData;
+- (void)edo_fooBarWithNil:(id)aNilValue;
 - (void)methodWithCallback:(id (^)(NSArray *))callback;
 - (void)structMethod:(CGRect)rect;
 - (CGSize)privateMethod;
