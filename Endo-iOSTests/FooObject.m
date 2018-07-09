@@ -26,11 +26,13 @@
     EDO_EXPORT_PROPERTY(@"fooBarCalled");
     EDO_EXPORT_PROPERTY(@"fooBarArgumentsCalled");
     EDO_EXPORT_PROPERTY(@"fooBarArgumentsAliasCalled");
+    EDO_EXPORT_PROPERTY(@"fooBarArrayBufferArgumentCalled");
     EDO_EXPORT_PROPERTY(@"edo_aFloat");
     EDO_BIND_METHOD(bindingMethod);
     EDO_EXPORT_METHOD(bar);
     EDO_EXPORT_METHOD(edo_fooBar);
     EDO_EXPORT_METHOD(edo_fooBarWithString:andView:);
+    EDO_EXPORT_METHOD(edo_fooBarWithArrayBuffer:);
     EDO_EXPORT_METHOD_ALIAS(edo_fooBar:andView:, @"fooBarWithString");
     EDO_EXPORT_METHOD(methodWithCallback:);
     EDO_EXPORT_METHOD(structMethod:);
@@ -70,6 +72,12 @@
 - (void)edo_fooBar:(NSString *)aString andView:(UIView *)aView {
     if ([aString isEqualToString:@"alias string value"] && [aView isKindOfClass:[UIView class]]) {
         self.fooBarArgumentsAliasCalled = YES;
+    }
+}
+
+- (void)edo_fooBarWithArrayBuffer:(NSData *)bufferData {
+    if ([bufferData isEqualToData:[@"buffer value" dataUsingEncoding:NSUTF8StringEncoding]]) {
+        self.fooBarArrayBufferArgumentCalled = YES;
     }
 }
 

@@ -171,6 +171,18 @@
                 return returnValue;
             };
         }
+        else if ([metaClassInfo[@"classname"] isKindOfClass:[NSString class]] &&
+                 [metaClassInfo[@"classname"] isEqualToString:@"__ArrayBuffer"] &&
+                 [metaClassInfo[@"bytes"] isKindOfClass:[NSArray class]]) {
+            NSMutableData *data = [NSMutableData data];
+            for (NSNumber *byteNumber in metaClassInfo[@"bytes"]) {
+                if ([byteNumber isKindOfClass:[NSNumber class]]) {
+                    const unsigned int byte = byteNumber.unsignedIntValue;
+                    [data appendBytes:&byte length:1];
+                }
+            }
+            return [data copy];
+        }
         else if ([metaClassInfo[@"objectRef"] isKindOfClass:[NSString class]]) {
             return [[EDOExporter sharedExporter] nsValueWithObjectRef:metaClassInfo[@"objectRef"]];
         }

@@ -58,4 +58,8 @@ typedef id(^EDOInitializer)(NSArray *arguments);
                               createIfNeeded:(BOOL)createdIfNeed;
 - (nonnull NSArray<JSValue *> *)scriptObjectsWithObject:(nonnull NSObject *)anObject;
 
+#ifdef DEBUG
++ (void)setUnitTestSharedExporter;
+#endif
+
 @end

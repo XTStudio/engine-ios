@@ -474,6 +474,14 @@ var EDOObject = /** @class */ (function (_super) {
             callback._meta_class.idx = this.__callbacks.length - 1;
             return callback;
         }
+        else if (parameter instanceof ArrayBuffer) {
+            return {
+                _meta_class: {
+                    classname: "__ArrayBuffer",
+                    bytes: Array.from(new Uint8Array(parameter))
+                }
+            };
+        }
         return parameter;
     };
     EDOObject.prototype.__invokeCallback = function (idx, args) {

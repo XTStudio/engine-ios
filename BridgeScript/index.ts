@@ -517,6 +517,14 @@ class EDOObject extends EventEmitter {
             (callback._meta_class as any).idx = this.__callbacks.length - 1
             return callback
         }
+        else if (parameter instanceof ArrayBuffer) {
+            return {
+                _meta_class: {
+                    classname: "__ArrayBuffer",
+                    bytes: Array.from(new Uint8Array(parameter)),
+                },
+            }
+        }
         return parameter
     }
 
