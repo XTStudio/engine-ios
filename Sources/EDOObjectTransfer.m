@@ -22,6 +22,9 @@
     else if ([anObject isKindOfClass:[NSString class]] || [anObject isKindOfClass:[NSNumber class]]) {
         return (JSValue *)anObject;
     }
+    else if ([anObject isKindOfClass:[NSError class]]) {
+        return [JSValue valueWithNewErrorFromMessage:[(NSError *)anObject localizedDescription] inContext:context];
+    }
     else if ([anObject isKindOfClass:[NSDictionary class]]) {
         return (JSValue *)[self convertToJSDictionaryWithNSDictionary:(NSDictionary *)anObject context:context];
     }

@@ -132,6 +132,8 @@
     [self.context evaluateScript:@"var testStructMethod = new FooObject"];
     [self.context evaluateScript:@"testStructMethod.structMethod({x: 0, y: 0, width: 100, height: 200})"];
     XCTAssertTrue([[self.context evaluateScript:@"testStructMethod.barCalled"] toBool]);
+    XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.errorReturn() instanceof Error"] toBool]);
+    XCTAssertTrue([[self.context evaluateScript:@"testMethodExports.errorReturn().message === 'error message'"] toBool]);
 }
 
 - (void)testMethodBinding {

@@ -33,5 +33,6 @@
 - (void)methodWithCallback:(id (^)(NSArray *))callback;
 - (void)structMethod:(CGRect)rect;
 - (CGSize)privateMethod;
+- (NSError *)edo_errorReturn;
 
 @end

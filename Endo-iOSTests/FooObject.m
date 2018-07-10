@@ -42,6 +42,7 @@
     EDO_EXPORT_PROPERTY(@"arrProperty");
     EDO_EXPORT_PROPERTY(@"dictProperty");
     EDO_EXPORT_READONLY_PROPERTY(@"readonlyProperty");
+    EDO_EXPORT_METHOD(edo_errorReturn);
 }
 
 - (instancetype)init
@@ -104,6 +105,12 @@
 
 - (CGSize)privateMethod {
     return CGSizeMake(100, 100);
+}
+
+- (NSError *)edo_errorReturn {
+    return [NSError errorWithDomain:@"" code:-1 userInfo:@{
+                                                           NSLocalizedDescriptionKey: @"error message",
+                                                           }];
 }
 
 @end
