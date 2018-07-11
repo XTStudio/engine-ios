@@ -369,7 +369,7 @@
             [invocation getReturnValue:&tempResult];
             return (JSValue *)@(tempResult);
         }
-        else if (strcmp(ret, "b") == 0) {
+        else if (strcmp(ret, "B") == 0) {
             BOOL tempResult;
             [invocation getReturnValue:&tempResult];
             return [JSValue valueWithBool:tempResult inContext:context];
