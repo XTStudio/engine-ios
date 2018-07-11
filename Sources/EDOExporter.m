@@ -156,7 +156,12 @@
     exportable.superName = @"ENUM";
     NSMutableString *valueScript = [NSMutableString string];
     [values enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        [valueScript appendFormat:@"%@[%@[\"%@\"] = %@] = \"%@\";", exportable.name, exportable.name, key, obj, key];
+        if ([obj isKindOfClass:[NSNumber class]]) {
+            [valueScript appendFormat:@"%@[%@[\"%@\"] = %@] = \"%@\";", exportable.name, exportable.name, key, obj, key];
+        }
+        else if ([obj isKindOfClass:[NSString class]]) {
+            [valueScript appendFormat:@"%@[%@[\"%@\"] = \"%@\"] = \"%@\";", exportable.name, exportable.name, key, obj, key];
+        }
     }];
     NSString *script = [NSString stringWithFormat:@"var %@;(function (%@) {%@})(%@ || (%@ = {}));",
                         exportable.name,

@@ -24,6 +24,13 @@
                                                @"bottom": @(UIViewContentModeBottom),
                                                @"left": @(UIViewContentModeLeft),
                                                }];
+    [[EDOExporter sharedExporter] exportEnum:@"UIEnumAsString"
+                                      values:@{
+                                               @"a": @"a",
+                                               @"b": @"b",
+                                               @"c": @"c",
+                                               @"d": @"d",
+                                               }];
 }
 
 - (void)testEnum {
@@ -33,6 +40,7 @@
     XCTAssertEqual([context evaluateScript:@"UIViewContentMode.right"].toInt32, UIViewContentModeRight);
     XCTAssertEqual([context evaluateScript:@"UIViewContentMode.bottom"].toInt32, UIViewContentModeBottom);
     XCTAssertEqual([context evaluateScript:@"UIViewContentMode.left"].toInt32, UIViewContentModeLeft);
+    XCTAssertTrue([[context evaluateScript:@"UIEnumAsString.c"].toString isEqualToString:@"c"]);
 }
 
 @end
