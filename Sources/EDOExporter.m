@@ -14,12 +14,22 @@
 #import "EDOObjectTransfer.h"
 #import "JSContext+EDOThread.h"
 
+@interface EDOContextWrapper: NSObject
+
+@property (nonatomic, weak) JSContext *context;
+
+@end
+
+@implementation EDOContextWrapper
+
+@end
+
 @interface EDOExporter ()
 
 @property (nonatomic, copy) NSDictionary<NSString *, EDOExportable *> *exportables;
 @property (nonatomic, copy) NSDictionary<NSString *, id> *exportedConstants;
 @property (nonatomic, copy) NSSet<NSString *> *exportedKeys;
-@property (nonatomic, copy) NSArray<NSValue *> *contexts;
+@property (nonatomic, copy) NSArray<EDOContextWrapper *> *contexts;
 
 @end
 
@@ -46,8 +56,8 @@
 }
 
 - (void)runGC {
-    for (NSValue *contextWrapper in self.contexts) {
-        JSContext *context = contextWrapper.nonretainedObjectValue;
+    for (EDOContextWrapper *contextWrapper in self.contexts) {
+        JSContext *context = contextWrapper.context;
         if (context != nil) {
             [context edo_garbageCollect];
         }
@@ -124,15 +134,18 @@
         context[key] = [EDOObjectTransfer convertToJSValueWithObject:obj context:context];
     }];
     BOOL shouldAddToContexts = YES;
-    for (NSValue *contextWrapper in self.contexts) {
-        if (contextWrapper.nonretainedObjectValue == context) {
+    for (EDOContextWrapper *contextWrapper in self.contexts) {
+        JSContext *weakContext = contextWrapper.context;
+        if (weakContext == context) {
             shouldAddToContexts = NO;
             break;
         }
     }
     if (shouldAddToContexts) {
         NSMutableArray *contexts = [self.contexts mutableCopy] ?: [NSMutableArray array];
-        [contexts addObject:[NSValue valueWithNonretainedObject:context]];
+        EDOContextWrapper *contextWrapper = [[EDOContextWrapper alloc] init];
+        contextWrapper.context = context;
+        [contexts addObject:contextWrapper];
         self.contexts = contexts;
     }
 }
@@ -411,8 +424,8 @@
 }
 
 - (id)nsValueWithObjectRef:(NSString *)objectRef {
-    for (NSValue *contextWrapper in self.contexts) {
-        JSContext *context = contextWrapper.nonretainedObjectValue;
+    for (EDOContextWrapper *contextWrapper in self.contexts) {
+        JSContext *context = contextWrapper.context;
         if (context != nil) {
             id nsValue = [context edo_nsValueWithObjectRef:objectRef];
             if (nsValue != nil) {
@@ -432,8 +445,8 @@
 
 - (NSArray<JSValue *> *)scriptObjectsWithObject:(NSObject *)anObject {
     NSMutableArray *results = [NSMutableArray array];
-    for (NSValue *contextWrapper in self.contexts) {
-        JSContext *context = contextWrapper.nonretainedObjectValue;
+    for (EDOContextWrapper *contextWrapper in self.contexts) {
+        JSContext *context = contextWrapper.context;
         if (context != nil) {
             JSValue *scriptObject = [self scriptObjectWithObject:anObject context:context initializer:nil createIfNeeded:NO];
             if (scriptObject != nil) {

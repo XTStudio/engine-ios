@@ -8,12 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		909365E920E38223008E4BCA /* Endo_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365E820E38223008E4BCA /* Endo_iOSTests.m */; };
-		909365F220E382AB008E4BCA /* UIView+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F120E382AB008E4BCA /* UIView+Tests.m */; };
-		909365F520E383F2008E4BCA /* UIButton+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F420E383F2008E4BCA /* UIButton+Tests.m */; };
-		909365F820E38741008E4BCA /* FooObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365F720E38741008E4BCA /* FooObject.m */; };
-		909365FB20E391A6008E4BCA /* BarObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365FA20E391A6008E4BCA /* BarObject.m */; };
 		9093660120E477CF008E4BCA /* JSContext+EDOThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 9093660020E477CF008E4BCA /* JSContext+EDOThread.m */; };
-		90AAD95420EA0B6200D82173 /* XXXObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90AAD95320EA0B6200D82173 /* XXXObject.m */; };
+		90F4B7F420F5BC9800E13294 /* ReturnTestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B7F320F5BC9800E13294 /* ReturnTestObject.m */; };
+		90F4B7F620F5BCA200E13294 /* ReturnTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B7F520F5BCA200E13294 /* ReturnTests.m */; };
+		90F4B7FA20F5D7D300E13294 /* ArgumentTestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B7F920F5D7D300E13294 /* ArgumentTestObject.m */; };
+		90F4B7FC20F5D9F500E13294 /* ArgumentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B7FB20F5D9F500E13294 /* ArgumentTests.m */; };
+		90F4B80420F5DD2100E13294 /* FooObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B80020F5DD2100E13294 /* FooObject.m */; };
+		90F4B80520F5DD2100E13294 /* BarObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B80220F5DD2100E13294 /* BarObject.m */; };
+		90F4B80620F5DD2100E13294 /* XXXObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B80320F5DD2100E13294 /* XXXObject.m */; };
+		90F4B80820F5DD7700E13294 /* ObjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B80720F5DD7700E13294 /* ObjectTests.m */; };
+		90F4B80C20F5EDFA00E13294 /* PropertyTestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B80B20F5EDFA00E13294 /* PropertyTestObject.m */; };
+		90F4B80E20F5EF6900E13294 /* PropertyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B80D20F5EF6900E13294 /* PropertyTests.m */; };
+		90F4B81120F5F27F00E13294 /* ConstTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B81020F5F27F00E13294 /* ConstTests.m */; };
+		90F4B81320F5F37F00E13294 /* EnumTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B81220F5F37F00E13294 /* EnumTests.m */; };
 		90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA922F20C667EE0096ED9D /* AppDelegate.m */; };
 		90FA923320C667EE0096ED9D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90FA923220C667EE0096ED9D /* ViewController.m */; };
 		90FA923620C667EE0096ED9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90FA923420C667EE0096ED9D /* Main.storyboard */; };
@@ -43,18 +50,26 @@
 		909365E620E38223008E4BCA /* Endo-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Endo-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		909365E820E38223008E4BCA /* Endo_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Endo_iOSTests.m; sourceTree = "<group>"; };
 		909365EA20E38223008E4BCA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		909365F020E382AB008E4BCA /* UIView+Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+Tests.h"; sourceTree = "<group>"; };
-		909365F120E382AB008E4BCA /* UIView+Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+Tests.m"; sourceTree = "<group>"; };
-		909365F320E383F2008E4BCA /* UIButton+Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIButton+Tests.h"; sourceTree = "<group>"; };
-		909365F420E383F2008E4BCA /* UIButton+Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Tests.m"; sourceTree = "<group>"; };
-		909365F620E38741008E4BCA /* FooObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FooObject.h; sourceTree = "<group>"; };
-		909365F720E38741008E4BCA /* FooObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FooObject.m; sourceTree = "<group>"; };
-		909365F920E391A6008E4BCA /* BarObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BarObject.h; sourceTree = "<group>"; };
-		909365FA20E391A6008E4BCA /* BarObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BarObject.m; sourceTree = "<group>"; };
 		909365FF20E477CF008E4BCA /* JSContext+EDOThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JSContext+EDOThread.h"; sourceTree = "<group>"; };
 		9093660020E477CF008E4BCA /* JSContext+EDOThread.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "JSContext+EDOThread.m"; sourceTree = "<group>"; };
-		90AAD95220EA0B6200D82173 /* XXXObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XXXObject.h; sourceTree = "<group>"; };
-		90AAD95320EA0B6200D82173 /* XXXObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XXXObject.m; sourceTree = "<group>"; };
+		90F4B7F220F5BC9800E13294 /* ReturnTestObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReturnTestObject.h; sourceTree = "<group>"; };
+		90F4B7F320F5BC9800E13294 /* ReturnTestObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReturnTestObject.m; sourceTree = "<group>"; };
+		90F4B7F520F5BCA200E13294 /* ReturnTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReturnTests.m; sourceTree = "<group>"; };
+		90F4B7F820F5D7D300E13294 /* ArgumentTestObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArgumentTestObject.h; sourceTree = "<group>"; };
+		90F4B7F920F5D7D300E13294 /* ArgumentTestObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArgumentTestObject.m; sourceTree = "<group>"; };
+		90F4B7FB20F5D9F500E13294 /* ArgumentTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ArgumentTests.m; sourceTree = "<group>"; };
+		90F4B7FE20F5DD2000E13294 /* BarObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BarObject.h; sourceTree = "<group>"; };
+		90F4B7FF20F5DD2000E13294 /* FooObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FooObject.h; sourceTree = "<group>"; };
+		90F4B80020F5DD2100E13294 /* FooObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FooObject.m; sourceTree = "<group>"; };
+		90F4B80120F5DD2100E13294 /* XXXObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXXObject.h; sourceTree = "<group>"; };
+		90F4B80220F5DD2100E13294 /* BarObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BarObject.m; sourceTree = "<group>"; };
+		90F4B80320F5DD2100E13294 /* XXXObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXXObject.m; sourceTree = "<group>"; };
+		90F4B80720F5DD7700E13294 /* ObjectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjectTests.m; sourceTree = "<group>"; };
+		90F4B80A20F5EDFA00E13294 /* PropertyTestObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PropertyTestObject.h; sourceTree = "<group>"; };
+		90F4B80B20F5EDFA00E13294 /* PropertyTestObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PropertyTestObject.m; sourceTree = "<group>"; };
+		90F4B80D20F5EF6900E13294 /* PropertyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PropertyTests.m; sourceTree = "<group>"; };
+		90F4B81020F5F27F00E13294 /* ConstTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConstTests.m; sourceTree = "<group>"; };
+		90F4B81220F5F37F00E13294 /* EnumTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EnumTests.m; sourceTree = "<group>"; };
 		90FA922B20C667EE0096ED9D /* Endo-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Endo-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90FA922E20C667EE0096ED9D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		90FA922F20C667EE0096ED9D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -108,19 +123,67 @@
 			isa = PBXGroup;
 			children = (
 				909365E820E38223008E4BCA /* Endo_iOSTests.m */,
-				909365F620E38741008E4BCA /* FooObject.h */,
-				909365F720E38741008E4BCA /* FooObject.m */,
-				909365F920E391A6008E4BCA /* BarObject.h */,
-				909365FA20E391A6008E4BCA /* BarObject.m */,
-				90AAD95220EA0B6200D82173 /* XXXObject.h */,
-				90AAD95320EA0B6200D82173 /* XXXObject.m */,
-				909365F020E382AB008E4BCA /* UIView+Tests.h */,
-				909365F120E382AB008E4BCA /* UIView+Tests.m */,
-				909365F320E383F2008E4BCA /* UIButton+Tests.h */,
-				909365F420E383F2008E4BCA /* UIButton+Tests.m */,
+				90F4B80F20F5F27400E13294 /* Other Tests */,
+				90F4B80920F5ED9400E13294 /* Property Tests */,
+				90F4B7FD20F5DCE000E13294 /* Object Tests */,
+				90F4B7F720F5D7B600E13294 /* Argument Value Tests */,
+				90F4B7F120F5BC8900E13294 /* Return Value Tests */,
 				909365EA20E38223008E4BCA /* Info.plist */,
 			);
 			path = "Endo-iOSTests";
+			sourceTree = "<group>";
+		};
+		90F4B7F120F5BC8900E13294 /* Return Value Tests */ = {
+			isa = PBXGroup;
+			children = (
+				90F4B7F520F5BCA200E13294 /* ReturnTests.m */,
+				90F4B7F220F5BC9800E13294 /* ReturnTestObject.h */,
+				90F4B7F320F5BC9800E13294 /* ReturnTestObject.m */,
+			);
+			path = "Return Value Tests";
+			sourceTree = "<group>";
+		};
+		90F4B7F720F5D7B600E13294 /* Argument Value Tests */ = {
+			isa = PBXGroup;
+			children = (
+				90F4B7FB20F5D9F500E13294 /* ArgumentTests.m */,
+				90F4B7F820F5D7D300E13294 /* ArgumentTestObject.h */,
+				90F4B7F920F5D7D300E13294 /* ArgumentTestObject.m */,
+			);
+			path = "Argument Value Tests";
+			sourceTree = "<group>";
+		};
+		90F4B7FD20F5DCE000E13294 /* Object Tests */ = {
+			isa = PBXGroup;
+			children = (
+				90F4B80720F5DD7700E13294 /* ObjectTests.m */,
+				90F4B7FE20F5DD2000E13294 /* BarObject.h */,
+				90F4B80220F5DD2100E13294 /* BarObject.m */,
+				90F4B7FF20F5DD2000E13294 /* FooObject.h */,
+				90F4B80020F5DD2100E13294 /* FooObject.m */,
+				90F4B80120F5DD2100E13294 /* XXXObject.h */,
+				90F4B80320F5DD2100E13294 /* XXXObject.m */,
+			);
+			path = "Object Tests";
+			sourceTree = "<group>";
+		};
+		90F4B80920F5ED9400E13294 /* Property Tests */ = {
+			isa = PBXGroup;
+			children = (
+				90F4B80D20F5EF6900E13294 /* PropertyTests.m */,
+				90F4B80A20F5EDFA00E13294 /* PropertyTestObject.h */,
+				90F4B80B20F5EDFA00E13294 /* PropertyTestObject.m */,
+			);
+			path = "Property Tests";
+			sourceTree = "<group>";
+		};
+		90F4B80F20F5F27400E13294 /* Other Tests */ = {
+			isa = PBXGroup;
+			children = (
+				90F4B81020F5F27F00E13294 /* ConstTests.m */,
+				90F4B81220F5F37F00E13294 /* EnumTests.m */,
+			);
+			path = "Other Tests";
 			sourceTree = "<group>";
 		};
 		90FA922220C667EE0096ED9D = {
@@ -307,12 +370,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				909365F220E382AB008E4BCA /* UIView+Tests.m in Sources */,
-				909365F820E38741008E4BCA /* FooObject.m in Sources */,
-				909365FB20E391A6008E4BCA /* BarObject.m in Sources */,
-				90AAD95420EA0B6200D82173 /* XXXObject.m in Sources */,
+				90F4B7FA20F5D7D300E13294 /* ArgumentTestObject.m in Sources */,
+				90F4B80820F5DD7700E13294 /* ObjectTests.m in Sources */,
+				90F4B7F620F5BCA200E13294 /* ReturnTests.m in Sources */,
 				909365E920E38223008E4BCA /* Endo_iOSTests.m in Sources */,
-				909365F520E383F2008E4BCA /* UIButton+Tests.m in Sources */,
+				90F4B80E20F5EF6900E13294 /* PropertyTests.m in Sources */,
+				90F4B81320F5F37F00E13294 /* EnumTests.m in Sources */,
+				90F4B81120F5F27F00E13294 /* ConstTests.m in Sources */,
+				90F4B80420F5DD2100E13294 /* FooObject.m in Sources */,
+				90F4B80C20F5EDFA00E13294 /* PropertyTestObject.m in Sources */,
+				90F4B7FC20F5D9F500E13294 /* ArgumentTests.m in Sources */,
+				90F4B80620F5DD2100E13294 /* XXXObject.m in Sources */,
+				90F4B7F420F5BC9800E13294 /* ReturnTestObject.m in Sources */,
+				90F4B80520F5DD2100E13294 /* BarObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

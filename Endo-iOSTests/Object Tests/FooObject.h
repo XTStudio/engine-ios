@@ -1,5 +1,5 @@
 //
-//  UIView+Tests.h
+//  FooObject.h
 //  Endo-iOSTests
 //
 //  Created by PonyCui on 2018/6/27.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIView (Tests)
+@interface FooObject : NSObject
+
+@property (nonatomic, assign) float floatValue;
 
 @end
