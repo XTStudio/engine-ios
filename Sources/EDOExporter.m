@@ -222,6 +222,10 @@
 }
 
 - (void)bindMethodToJavaScript:(Class)clazz selector:(SEL)aSelector {
+    [self bindMethodToJavaScript:clazz selector:aSelector isBefore:NO];
+}
+
+- (void)bindMethodToJavaScript:(Class)clazz selector:(SEL)aSelector isBefore:(BOOL)isBefore {
     NSString *selectorName = NSStringFromSelector(aSelector);
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
         if (obj.clazz == clazz) {
@@ -233,7 +237,7 @@
             obj.bindedMethods = bindedMethods.copy;
         }
     }];
-    [clazz aspect_hookSelector:aSelector withOptions:AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo) {
+    [clazz aspect_hookSelector:aSelector withOptions:isBefore ? AspectPositionBefore : AspectPositionAfter usingBlock:^(id<AspectInfo> aspectInfo) {
         if ([aspectInfo.instance isKindOfClass:[NSObject class]]) {
             NSObject *target = aspectInfo.instance;
             if (target.edo_objectRef != nil) {

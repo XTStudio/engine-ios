@@ -47,6 +47,7 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (void)exportInitializer:(Class)clazz initializer:(nonnull EDOInitializer)initializer;
 - (void)exportProperty:(Class)clazz propName:(nonnull NSString *)propName readonly:(BOOL)readonly;
 - (void)bindMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;
+- (void)bindMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector isBefore:(BOOL)isBefore;
 - (void)exportMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector;
 - (void)exportMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector jsName:(nullable NSString *)jsName;
 - (void)exportScriptToJavaScript:(Class)clazz script:(nonnull NSString *)script;
