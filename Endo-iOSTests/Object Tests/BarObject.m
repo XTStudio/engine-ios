@@ -15,6 +15,7 @@
 + (void)load {
     EDO_EXPORT_CLASS(@"BarObject", @"FooObject");
     EDO_EXPORT_PROPERTY(@"intValue");
+    EDO_BIND_METHOD(bindTest:);
     [[EDOExporter sharedExporter] exportInitializer:[self class] initializer:^id(NSArray *arguments) {
         BarObject *instance = [[BarObject alloc] init];
         if (0 < arguments.count && [arguments[0] isKindOfClass:[NSNumber class]]) {

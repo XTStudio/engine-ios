@@ -12,4 +12,6 @@
 
 @property (nonatomic, assign) NSInteger intValue;
 
+- (void)bindTest:(NSInteger)value;
+
 @end

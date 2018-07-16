@@ -243,7 +243,7 @@
             if (target.edo_objectRef != nil) {
                 [[self scriptObjectsWithObject:target] enumerateObjectsUsingBlock:^(JSValue * _Nonnull scriptObject, NSUInteger idx, BOOL * _Nonnull stop) {
                     [scriptObject invokeMethod:[NSString stringWithFormat:@"__%@", [[selectorName componentsSeparatedByString:@":"] firstObject]]
-                                 withArguments:@[]];
+                                 withArguments:[EDOObjectTransfer convertToJSArgumentsWithNSArguments:aspectInfo.arguments context:scriptObject.context]];
                 }];
             }
         }

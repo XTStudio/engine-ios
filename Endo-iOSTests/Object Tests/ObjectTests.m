@@ -50,4 +50,10 @@
     XCTAssertEqual([[obj edo_valueWithEventName:@"clickTime" arguments:nil] integerValue], 1);
 }
 
+- (void)testBind {
+    [self.context evaluateScript:@"class SSSObject extends BarObject { bindTest(e) { this.intValue = e; } } ; var obj = new SSSObject"];
+    [self.context evaluateScript:@"obj.bindTest(123);"];
+    XCTAssertEqual([self.context evaluateScript:@"obj.intValue"].toInt32, 123);
+}
+
 @end
