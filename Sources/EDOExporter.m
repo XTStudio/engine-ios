@@ -39,7 +39,7 @@
     static EDOExporter *instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [EDOExporter new];
+        instance = [[EDOExporter alloc] init];
     });
     return instance;
 }

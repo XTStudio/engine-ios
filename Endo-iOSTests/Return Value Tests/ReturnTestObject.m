@@ -79,11 +79,11 @@
 }
 
 - (FooObject *)objectValue; {
-    return [FooObject new];
+    return [[FooObject alloc] init];
 }
 
 - (XXXObject *)unexportdClassValue {
-    return [XXXObject new];
+    return [[XXXObject alloc] init];
 }
 
 - (NSError *)errorValue; {

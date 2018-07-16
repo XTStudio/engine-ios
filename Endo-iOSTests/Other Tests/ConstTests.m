@@ -20,7 +20,7 @@
     [super setUp];
     EDO_EXPORT_CONST(@"kTestConst", @"const value");
     EDO_EXPORT_CONST(@"kTestNumberConst", @(123));
-    EDO_EXPORT_CONST(@"kTestObjectConst", [FooObject new]);
+    EDO_EXPORT_CONST(@"kTestObjectConst", [[FooObject alloc] init]);
 }
 
 - (void)testConsts {

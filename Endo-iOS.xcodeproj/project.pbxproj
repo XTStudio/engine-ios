@@ -47,6 +47,7 @@
 /* Begin PBXFileReference section */
 		3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Endo-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C5DB9959260C5C86CFD1D6B /* Pods-Endo-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Endo-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		907D748820FC779200C1D7D7 /* Endo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Endo.h; sourceTree = "<group>"; };
 		909365E620E38223008E4BCA /* Endo-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Endo-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		909365E820E38223008E4BCA /* Endo_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Endo_iOSTests.m; sourceTree = "<group>"; };
 		909365EA20E38223008E4BCA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -226,6 +227,7 @@
 		90FA924420C667FB0096ED9D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				907D748820FC779200C1D7D7 /* Endo.h */,
 				90FA924520C6693B0096ED9D /* EDOExporter.h */,
 				90FA924820C66B370096ED9D /* EDOExporter.m */,
 				90FA924D20C66D2F0096ED9D /* EDOExportable.h */,
