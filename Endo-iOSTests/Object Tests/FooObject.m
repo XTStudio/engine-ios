@@ -14,6 +14,8 @@
 + (void)load {
     EDO_EXPORT_CLASS(@"FooObject", nil);
     EDO_EXPORT_PROPERTY(@"floatValue");
+    EDO_EXPORT_SCRIPT(@"Initializer.staticFoo2 = new Initializer()")
+    EDO_EXPORT_GLOBAL_SCRIPT(@"FooObject.staticFoo = new FooObject()")
 }
 
 - (instancetype)init

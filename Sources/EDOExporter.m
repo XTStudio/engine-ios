@@ -115,12 +115,23 @@
                  jsName,
                  methodSelector];
             }];
+            NSMutableString *innerScript = [NSMutableString string];
+            [obj.innerScripts enumerateObjectsUsingBlock:^(NSString * _Nonnull script, NSUInteger idx, BOOL * _Nonnull stop) {
+                [innerScript appendFormat:@";%@;", script];
+            }];
             NSMutableString *exportedScript = [NSMutableString string];
             [obj.exportedScripts enumerateObjectsUsingBlock:^(NSString * _Nonnull script, NSUInteger idx, BOOL * _Nonnull stop) {
-                [exportedScript appendString:script];
+                [exportedScript appendFormat:@";%@;", script];
             }];
-            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@;%@;%@;%@;%@;return Initializer; }(%@));",
-                                     classKey, constructorScript, propsScript, bindMethodScript, exportMethodScript, exportedScript, obj.superName];
+            NSString *clazzScript = [NSString stringWithFormat:@";var %@ = /** @class */ (function (_super) {;__extends(Initializer, _super) ;%@;%@;%@;%@;%@;return Initializer; }(%@));%@",
+                                     classKey,
+                                     constructorScript,
+                                     propsScript,
+                                     bindMethodScript,
+                                     exportMethodScript,
+                                     innerScript,
+                                     obj.superName,
+                                     exportedScript];
             [script appendString:clazzScript];
             [exported addObject:obj.name];
             [exportables removeObjectForKey:classKey];
@@ -287,14 +298,23 @@
     self.exportedKeys = exportedKeys;
 }
 
-- (void)exportScriptToJavaScript:(Class)clazz script:(NSString *)script {
+- (void)exportScriptToJavaScript:(Class)clazz script:(NSString *)script isInnerScript:(BOOL)isInnerScript {
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
         if (obj.clazz == clazz) {
-            NSMutableArray *exportedScripts = (obj.exportedScripts ?: @[]).mutableCopy;
-            if (![exportedScripts containsObject:script]) {
-                [exportedScripts addObject:script];
+            if (isInnerScript) {
+                NSMutableArray *innerScripts = (obj.innerScripts ?: @[]).mutableCopy;
+                if (![innerScripts containsObject:script]) {
+                    [innerScripts addObject:script];
+                }
+                obj.innerScripts = innerScripts.copy;
             }
-            obj.exportedScripts = exportedScripts.copy;
+            else {
+                NSMutableArray *exportedScripts = (obj.exportedScripts ?: @[]).mutableCopy;
+                if (![exportedScripts containsObject:script]) {
+                    [exportedScripts addObject:script];
+                }
+                obj.exportedScripts = exportedScripts.copy;
+            }
         }
     }];
 }

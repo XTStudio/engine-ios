@@ -56,4 +56,9 @@
     XCTAssertEqual([self.context evaluateScript:@"obj.intValue"].toInt32, 123);
 }
 
+- (void)testScript {
+    XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticFoo.floatValue"].toDouble - 0.1) < 0.01);
+    XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticFoo2.floatValue"].toDouble - 0.1) < 0.01);
+}
+
 @end

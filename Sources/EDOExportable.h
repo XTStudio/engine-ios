@@ -19,6 +19,7 @@
 @property (nonatomic, copy) NSArray<NSString *> *readonlyProps;
 @property (nonatomic, copy) NSArray<NSString *> *bindedMethods;
 @property (nonatomic, copy) NSDictionary<NSString *, NSString *> *exportedMethods;
+@property (nonatomic, copy) NSArray<NSString *> *innerScripts;
 @property (nonatomic, copy) NSArray<NSString *> *exportedScripts;
 
 @end

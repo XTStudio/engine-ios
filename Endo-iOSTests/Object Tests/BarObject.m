@@ -34,4 +34,8 @@
     return self;
 }
 
+- (void)bindTest:(NSInteger)value {
+    
+}
+
 @end
