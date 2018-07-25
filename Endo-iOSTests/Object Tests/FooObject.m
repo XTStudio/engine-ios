@@ -14,8 +14,9 @@
 + (void)load {
     EDO_EXPORT_CLASS(@"FooObject", nil);
     EDO_EXPORT_PROPERTY(@"floatValue");
-    EDO_EXPORT_SCRIPT(@"Initializer.staticFoo2 = new Initializer()")
-    EDO_EXPORT_GLOBAL_SCRIPT(@"FooObject.staticFoo = new FooObject()")
+    EDO_EXPORT_STATIC_PROPERTY(@"staticValue");
+    EDO_EXPORT_SCRIPT(@"Initializer.staticFoo2 = new Initializer()");
+    EDO_EXPORT_GLOBAL_SCRIPT(@"FooObject.staticFoo = new FooObject()");
 }
 
 - (instancetype)init
@@ -25,6 +26,16 @@
         _floatValue = 0.1;
     }
     return self;
+}
+
+static float staticValue = 0.2;
+
++ (float)staticValue {
+    return staticValue;
+}
+
++ (void)setStaticValue:(float)value {
+    staticValue = value;
 }
 
 @end

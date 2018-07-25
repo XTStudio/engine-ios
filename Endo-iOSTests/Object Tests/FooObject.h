@@ -12,4 +12,7 @@
 
 @property (nonatomic, assign) float floatValue;
 
++ (float)staticValue;
++ (void)setStaticValue:(float)value;
+
 @end

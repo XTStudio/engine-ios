@@ -93,15 +93,33 @@
             NSMutableString *propsScript = [NSMutableString string];
             [obj.exportedProps enumerateObjectsUsingBlock:^(NSString * _Nonnull propKey, NSUInteger idx, BOOL * _Nonnull stop) {
                 if ([obj.readonlyProps containsObject:propKey]) {
-                    [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){},enumerable:false,configurable:true});",
-                     [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
-                     propKey];
+                    if ([propKey hasPrefix:@"s."]) {
+                        [propsScript appendFormat:@"Object.defineProperty(Initializer,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",\"%@\")},set:function(value){},enumerable:false,configurable:true});",
+                         [[propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""] stringByReplacingOccurrencesOfString:@"s." withString:@""],
+                         propKey,
+                         classKey];
+                    }
+                    else {
+                        [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){},enumerable:false,configurable:true});",
+                         [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
+                         propKey];
+                    }
                 }
                 else {
-                    [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:false,configurable:true});",
-                     [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
-                     propKey,
-                     propKey];
+                    if ([propKey hasPrefix:@"s."]) {
+                        [propsScript appendFormat:@"Object.defineProperty(Initializer,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",\"%@\")},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",[value],\"%@\")},enumerable:false,configurable:true});",
+                         [[propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""] stringByReplacingOccurrencesOfString:@"s." withString:@""],
+                         propKey,
+                         classKey,
+                         propKey,
+                         classKey];
+                    }
+                    else {
+                        [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:false,configurable:true});",
+                         [propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""],
+                         propKey,
+                         propKey];
+                    }
                 }
             }];
             NSMutableString *bindMethodScript = [NSMutableString string];
@@ -232,6 +250,10 @@
     self.exportedKeys = exportedKeys;
 }
 
+- (void)exportStaticProperty:(Class)clazz propName:(NSString *)propName readonly:(BOOL)readonly {
+    [self exportProperty:clazz propName:[NSString stringWithFormat:@"s.%@", propName] readonly:readonly];
+}
+
 - (void)bindMethodToJavaScript:(Class)clazz selector:(SEL)aSelector {
     [self bindMethodToJavaScript:clazz selector:aSelector isBefore:NO];
 }
@@ -336,6 +358,23 @@
 }
 
 - (JSValue *)valueWithPropertyName:(NSString *)name owner:(JSValue *)owner {
+    if ([name hasPrefix:@"s."]) {
+        @try {
+            Class clazz = NSClassFromString(owner.toString);
+            if (![self checkExported:clazz exportedKey:name]) {
+                return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+            }
+            char ret[256];
+            SEL selector = NSSelectorFromString([name stringByReplacingOccurrencesOfString:@"s."
+                                                                                withString:@""]);
+            method_getReturnType(class_getClassMethod(clazz, selector), ret, 256);
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[clazz methodSignatureForSelector:selector]];
+            [invocation setTarget:clazz];
+            [invocation setSelector:selector];
+            [invocation invoke];
+            return [EDOObjectTransfer getReturnValueFromInvocation:invocation valueType:ret context:owner.context];
+        } @catch (NSException *exception) {} @finally {}
+    }
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
         if (![self checkExported:ownerObject.class exportedKey:name]) {
@@ -350,6 +389,33 @@
 }
 
 - (void)setValueWithPropertyName:(NSString *)name value:(JSValue *)value owner:(JSValue *)owner {
+    if ([name hasPrefix:@"s."]) {
+        NSArray *arguments = [EDOObjectTransfer convertToNSArgumentsWithJSArguments:value.toArray owner:owner];
+        @try {
+            Class clazz = NSClassFromString(owner.toString);
+            if (![self checkExported:clazz exportedKey:name]) {
+                return ;
+            }
+            
+            NSString *trimName = [name stringByReplacingOccurrencesOfString:@"s." withString:@""];
+            NSString *selectorName = [NSString stringWithFormat:@"set%@%@:",
+                                      [trimName substringToIndex:1].uppercaseString,
+                                      [trimName substringFromIndex:1]];
+            SEL selector = NSSelectorFromString(selectorName);
+            char ret[256];
+            method_getReturnType(class_getClassMethod(clazz, selector), ret, 256);
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[clazz methodSignatureForSelector:selector]];
+            [invocation setTarget:clazz];
+            [invocation setSelector:selector];
+            [arguments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                char argumentType[256] = {};
+                method_getArgumentType(class_getClassMethod(clazz, selector), (unsigned int)(idx + 2), argumentType, 256);
+                [EDOObjectTransfer setArgumentToInvocation:invocation idx:idx + 2 obj:obj argumentType:argumentType];
+            }];
+            [invocation invoke];
+            return ;
+        } @catch (NSException *exception) {} @finally {}
+    }
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     if ([ownerObject isKindOfClass:[NSObject class]]) {
         if (![self checkExported:ownerObject.class exportedKey:name]) {

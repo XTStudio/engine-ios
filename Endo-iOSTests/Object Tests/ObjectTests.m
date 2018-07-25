@@ -57,6 +57,9 @@
 }
 
 - (void)testScript {
+    XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticValue"].toDouble - 0.2) < 0.01);
+    [self.context evaluateScript:@"FooObject.staticValue = 3.0"];
+    XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticValue"].toDouble - 3.0) < 0.01);
     XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticFoo.floatValue"].toDouble - 0.1) < 0.01);
     XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticFoo2.floatValue"].toDouble - 0.1) < 0.01);
 }
