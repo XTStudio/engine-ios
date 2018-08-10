@@ -199,6 +199,9 @@
 + (NSDictionary *)convertToNSDictionaryWithJSDictionary:(NSDictionary *)jsDictionary owner:(JSValue *)owner {
     NSMutableDictionary *nsDictionary = [NSMutableDictionary dictionary];
     for (NSString *aKey in jsDictionary) {
+        if ([aKey isEqualToString:@"constructor"]) {
+            continue;
+        }
         id value = [self convertToNSValueWithPlainValue:jsDictionary[aKey] owner:owner];
         if (value != nil) {
             [nsDictionary setObject:value forKey:aKey];
