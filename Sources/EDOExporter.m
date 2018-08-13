@@ -97,7 +97,7 @@
                         [propsScript appendFormat:@"Object.defineProperty(Initializer,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",\"%@\")},set:function(value){},enumerable:false,configurable:true});",
                          [[propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""] stringByReplacingOccurrencesOfString:@"s." withString:@""],
                          propKey,
-                         classKey];
+                         NSStringFromClass(obj.clazz)];
                     }
                     else {
                         [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){},enumerable:false,configurable:true});",
@@ -110,9 +110,9 @@
                         [propsScript appendFormat:@"Object.defineProperty(Initializer,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",\"%@\")},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",[value],\"%@\")},enumerable:false,configurable:true});",
                          [[propKey stringByReplacingOccurrencesOfString:@"edo_" withString:@""] stringByReplacingOccurrencesOfString:@"s." withString:@""],
                          propKey,
-                         classKey,
+                         NSStringFromClass(obj.clazz),
                          propKey,
-                         classKey];
+                         NSStringFromClass(obj.clazz)];
                     }
                     else {
                         [propsScript appendFormat:@"Object.defineProperty(Initializer.prototype,\"%@\",{get:function(){return ENDO.valueWithPropertyNameOwner(\"%@\",this)},set:function(value){ENDO.setValueWithPropertyNameValueOwner(\"%@\",value,this)},enumerable:false,configurable:true});",
