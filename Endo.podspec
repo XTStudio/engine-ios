@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "Endo"
-  s.version      = "0.0.1"
+  s.version      = "0.1.0"
   s.summary      = "Endo is a light-weight JavaScript bridge."
 
   s.description  = <<-DESC
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
 
   s.license      = "MIT"
   
-  s.author             = { "PonyCui" => "cuis@vip.qq.com" }
+  s.author       = { "PonyCui" => "cuis@vip.qq.com" }
   
   s.platform     = :ios, "9.0"
 
