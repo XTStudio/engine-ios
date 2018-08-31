@@ -64,4 +64,9 @@
     XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticFoo2.floatValue"].toDouble - 0.1) < 0.01);
 }
 
+- (void)testGlobalObject {
+    [self.context evaluateScript:@"global.testGlobalObject = 1"];
+    XCTAssertEqual([self.context[@"testGlobalObject"] toInt32], 1);
+}
+
 @end
