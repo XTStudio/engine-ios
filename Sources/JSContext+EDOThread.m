@@ -52,6 +52,12 @@ static int kReferenceTag;
                                  NSStringFromClass(anObject.class), anObject.edo_objectRef]];
 }
 
+- (void)edo_unstoreScriptObject:(NSObject *)anObject {
+    @synchronized(self) {
+        [self.edo_references removeObjectForKey:anObject.edo_objectRef];
+    }
+}
+
 - (void)edo_storeScriptObject:(NSObject *)anObject scriptObject:(JSValue *)scriptObject {
     if (anObject.edo_objectRef == nil) {
         anObject.edo_objectRef = [[NSUUID UUID] UUIDString];
@@ -113,7 +119,7 @@ static int kReferenceTag;
             else {
                 EDOObjectReference *ref;
                 @synchronized(self) {
-                    EDOObjectReference *ref = self.edo_references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
+                    ref = self.edo_references[anObject.edo_objectRef] ?: [[EDOObjectReference alloc] initWithValue:anObject];
                     [self.edo_references setObject:ref forKey:anObject.edo_objectRef];
                 }
                 JSValue *scriptObject = [self evaluateScript:[NSString stringWithFormat:@"new %@(new _EDO_MetaClass(\"%@\", \"%@\"))",

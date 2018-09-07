@@ -57,6 +57,10 @@ typedef id(^EDOInitializer)(NSArray *arguments);
 - (void)exportScriptToJavaScript:(Class)clazz script:(nonnull NSString *)script isInnerScript:(BOOL)isInnerScript;
 - (nullable id)nsValueWithJSValue:(nonnull JSValue *)value;
 - (nullable id)nsValueWithObjectRef:(nonnull NSString *)objectRef;
+- (void)createScriptObjectIfNeed:(nonnull NSObject *)anObject
+                         context:(nonnull JSContext *)context
+                     initializer:(nullable id (^)(NSArray *, BOOL))initializer
+                  createIfNeeded:(BOOL)createdIfNeed;
 - (nullable JSValue *)scriptObjectWithObject:(nonnull NSObject *)anObject
                                      context:(nonnull JSContext *)context
                                  initializer:(nullable id (^)(NSArray *, BOOL))initializer

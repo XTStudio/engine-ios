@@ -13,9 +13,21 @@
 
 @implementation NSObject (EDOObjectRef)
 
+static int edo_customInitialized_key;
 static int edo_refCount_key;
 static int edo_objectRef_key;
 static int edo_listeningEvents_key;
+
+- (BOOL)edo_customInitialized {
+    return [objc_getAssociatedObject(self, &edo_customInitialized_key) boolValue];
+}
+
+- (void)setEdo_customInitialized:(BOOL)edo_customInitialized {
+    objc_setAssociatedObject(self,
+                             &edo_customInitialized_key,
+                             @(edo_customInitialized),
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 - (NSInteger)edo_refCount {
     return [objc_getAssociatedObject(self, &edo_refCount_key) integerValue];

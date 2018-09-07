@@ -536,11 +536,26 @@
     return nil;
 }
 
+- (void)createScriptObjectIfNeed:(NSObject *)anObject
+                         context:(JSContext *)context
+                     initializer:(id (^)(NSArray *, BOOL))initializer
+                  createIfNeeded:(BOOL)createdIfNeed {
+    if (initializer != nil && !anObject.edo_customInitialized) {
+        [context edo_unstoreScriptObject:anObject];
+        [context edo_jsValueWithObject:anObject
+                           initializer:initializer
+                        createIfNeeded:createdIfNeed];
+        anObject.edo_customInitialized = YES;
+    }
+}
+
 - (JSValue *)scriptObjectWithObject:(NSObject *)anObject
                             context:(JSContext *)context
                         initializer:(id (^)(NSArray *, BOOL))initializer
                      createIfNeeded:(BOOL)createdIfNeed {
-    return [context edo_jsValueWithObject:anObject initializer:initializer createIfNeeded:createdIfNeed];
+    return [context edo_jsValueWithObject:anObject
+                              initializer:initializer
+                           createIfNeeded:createdIfNeed];
 }
 
 - (NSArray<JSValue *> *)scriptObjectsWithObject:(NSObject *)anObject {

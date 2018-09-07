@@ -10,6 +10,7 @@
 
 @interface NSObject (EDOObjectRef)
 
+@property (nonatomic, assign) BOOL edo_customInitialized;
 @property (nonatomic, assign) NSInteger edo_refCount;
 @property (nonatomic, strong) NSString *edo_objectRef;
 @property (nonatomic, strong) NSSet *edo_listeningEvents;
