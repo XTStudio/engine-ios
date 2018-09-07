@@ -53,6 +53,9 @@ static int kReferenceTag;
 }
 
 - (void)edo_unstoreScriptObject:(NSObject *)anObject {
+    if (anObject.edo_objectRef == nil) {
+        return;
+    }
     @synchronized(self) {
         [self.edo_references removeObjectForKey:anObject.edo_objectRef];
     }
