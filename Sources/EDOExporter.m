@@ -8,7 +8,7 @@
 
 #import <Aspects/Aspects.h>
 #import <objc/runtime.h>
-#import <UULog/UULog.h>
+#import "EDOLogger.h"
 #import "EDOExporter.h"
 #import "EDOExportable.h"
 #import "NSObject+EDOObjectRef.h"
@@ -66,7 +66,7 @@
 }
 
 - (void)exportWithContext:(JSContext *)context {
-    [UULog attachToContext:context];
+    [EDOLogger attachToContext:context];
     if ([context[@"global"] isUndefined]) {
         [context evaluateScript:@"var global = this;" withSourceURL:nil];
     }

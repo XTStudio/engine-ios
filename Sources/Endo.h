@@ -9,6 +9,7 @@
 #ifndef Endo_h
 #define Endo_h
 
+#import "EDOFactory.h"
 #import "EDOExporter.h"
 #import "EDOExportable.h"
 #import "EDOObjectTransfer.h"

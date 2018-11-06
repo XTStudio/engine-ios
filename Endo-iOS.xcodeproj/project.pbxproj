@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		63C2967021916F8F003CF6F4 /* EDOLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C2966E21916F8F003CF6F4 /* EDOLogger.m */; };
+		63C2967621917BE5003CF6F4 /* EDOFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C2967521917BE5003CF6F4 /* EDOFactory.m */; };
+		63C2967A2191812E003CF6F4 /* EDODebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C296782191812D003CF6F4 /* EDODebugger.m */; };
 		909365E920E38223008E4BCA /* Endo_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 909365E820E38223008E4BCA /* Endo_iOSTests.m */; };
 		9093660120E477CF008E4BCA /* JSContext+EDOThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 9093660020E477CF008E4BCA /* JSContext+EDOThread.m */; };
 		90F4B7F420F5BC9800E13294 /* ReturnTestObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 90F4B7F320F5BC9800E13294 /* ReturnTestObject.m */; };
@@ -47,6 +50,12 @@
 /* Begin PBXFileReference section */
 		3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Endo-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C5DB9959260C5C86CFD1D6B /* Pods-Endo-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Endo-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		63C2966E21916F8F003CF6F4 /* EDOLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EDOLogger.m; sourceTree = "<group>"; };
+		63C2966F21916F8F003CF6F4 /* EDOLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EDOLogger.h; sourceTree = "<group>"; };
+		63C2967521917BE5003CF6F4 /* EDOFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDOFactory.m; sourceTree = "<group>"; };
+		63C2967721917C82003CF6F4 /* EDOFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EDOFactory.h; sourceTree = "<group>"; };
+		63C296782191812D003CF6F4 /* EDODebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EDODebugger.m; sourceTree = "<group>"; };
+		63C296792191812D003CF6F4 /* EDODebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EDODebugger.h; sourceTree = "<group>"; };
 		907D748820FC779200C1D7D7 /* Endo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Endo.h; sourceTree = "<group>"; };
 		909365E620E38223008E4BCA /* Endo-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Endo-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		909365E820E38223008E4BCA /* Endo_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Endo_iOSTests.m; sourceTree = "<group>"; };
@@ -228,12 +237,18 @@
 			isa = PBXGroup;
 			children = (
 				907D748820FC779200C1D7D7 /* Endo.h */,
+				63C2967721917C82003CF6F4 /* EDOFactory.h */,
+				63C2967521917BE5003CF6F4 /* EDOFactory.m */,
 				90FA924520C6693B0096ED9D /* EDOExporter.h */,
 				90FA924820C66B370096ED9D /* EDOExporter.m */,
 				90FA924D20C66D2F0096ED9D /* EDOExportable.h */,
 				90FA924E20C66D2F0096ED9D /* EDOExportable.m */,
 				90FA925720C781700096ED9D /* EDOObjectTransfer.h */,
 				90FA925820C781700096ED9D /* EDOObjectTransfer.m */,
+				63C2966F21916F8F003CF6F4 /* EDOLogger.h */,
+				63C2966E21916F8F003CF6F4 /* EDOLogger.m */,
+				63C296792191812D003CF6F4 /* EDODebugger.h */,
+				63C296782191812D003CF6F4 /* EDODebugger.m */,
 				90FA924A20C66B790096ED9D /* NSObject+EDOObjectRef.h */,
 				90FA924B20C66B790096ED9D /* NSObject+EDOObjectRef.m */,
 				909365FF20E477CF008E4BCA /* JSContext+EDOThread.h */,
@@ -393,11 +408,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				90FA923320C667EE0096ED9D /* ViewController.m in Sources */,
+				63C2967621917BE5003CF6F4 /* EDOFactory.m in Sources */,
 				90FA924C20C66B790096ED9D /* NSObject+EDOObjectRef.m in Sources */,
 				90FA924920C66B370096ED9D /* EDOExporter.m in Sources */,
+				63C2967A2191812E003CF6F4 /* EDODebugger.m in Sources */,
 				90FA925920C781700096ED9D /* EDOObjectTransfer.m in Sources */,
 				9093660120E477CF008E4BCA /* JSContext+EDOThread.m in Sources */,
 				90FA923E20C667EE0096ED9D /* main.m in Sources */,
+				63C2967021916F8F003CF6F4 /* EDOLogger.m in Sources */,
 				90FA924F20C66D2F0096ED9D /* EDOExportable.m in Sources */,
 				90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */,
 			);
