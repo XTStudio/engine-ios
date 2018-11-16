@@ -15,6 +15,7 @@
     EDO_EXPORT_CLASS(@"FooObject", nil);
     EDO_EXPORT_PROPERTY(@"floatValue");
     EDO_EXPORT_STATIC_PROPERTY(@"staticValue");
+    EDO_EXPORT_STATIC_METHOD(staticMethod);
     EDO_EXPORT_SCRIPT(@"Initializer.staticFoo2 = new Initializer()");
     EDO_EXPORT_GLOBAL_SCRIPT(@"FooObject.staticFoo = new FooObject()");
 }
@@ -36,6 +37,10 @@ static float staticValue = 0.2;
 
 + (void)setStaticValue:(float)value {
     staticValue = value;
+}
+
++ (int)staticMethod {
+    return 1;
 }
 
 @end

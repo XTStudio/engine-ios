@@ -134,9 +134,17 @@
             }];
             NSMutableString *exportMethodScript = [NSMutableString string];
             [obj.exportedMethods enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull methodSelector, NSString * _Nonnull jsName, BOOL * _Nonnull stop) {
-                [exportMethodScript appendFormat:@"Initializer.prototype.%@ = function () {var args=[];for(var key in arguments){args.push(this.__convertToJSValue(arguments[key]))}return ENDO.callMethodWithNameArgumentsOwner(\"%@\", args, this);};",
-                 jsName,
-                 methodSelector];
+                if ([methodSelector hasPrefix:@"s."]) {
+                    [exportMethodScript appendFormat:@"Initializer.%@ = function () {var args=[];for(var key in arguments){args.push(arguments[key])}return ENDO.callMethodWithNameArgumentsOwner(\"%@\", args, \"%@\");};",
+                     jsName,
+                     methodSelector,
+                     NSStringFromClass(obj.clazz)];
+                }
+                else {
+                    [exportMethodScript appendFormat:@"Initializer.prototype.%@ = function () {var args=[];for(var key in arguments){args.push(this.__convertToJSValue(arguments[key]))}return ENDO.callMethodWithNameArgumentsOwner(\"%@\", args, this);};",
+                     jsName,
+                     methodSelector];
+                }
             }];
             NSMutableString *innerScript = [NSMutableString string];
             [obj.innerScripts enumerateObjectsUsingBlock:^(NSString * _Nonnull script, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -325,6 +333,42 @@
     self.exportedKeys = exportedKeys;
 }
 
+- (void)exportStaticMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector {
+    [self exportStaticMethodToJavaScript:clazz selector:aSelector jsName:nil];
+}
+
+- (void)exportStaticMethodToJavaScript:(Class)clazz selector:(nonnull SEL)aSelector jsName:(nullable NSString *)jsName {
+    NSString *selectorName = [NSString stringWithFormat:@"s.%@", NSStringFromSelector(aSelector)];
+    [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
+        if (obj.clazz == clazz) {
+            NSMutableDictionary *exportedMethods = (obj.exportedMethods ?: @{}).mutableCopy;
+            if (jsName != nil) {
+                exportedMethods[selectorName] = jsName;
+            }
+            else {
+                NSArray *components = [[NSStringFromSelector(aSelector) stringByReplacingOccurrencesOfString:@"edo_" withString:@""] componentsSeparatedByString:@":"];
+                NSMutableString *jsName = [NSMutableString string];
+                [components enumerateObjectsUsingBlock:^(NSString * _Nonnull component, NSUInteger idx, BOOL * _Nonnull stop) {
+                    if (component.length < 1) {
+                        return ;
+                    }
+                    if (idx == 0) {
+                        [jsName appendString:component];
+                    }
+                    else {
+                        [jsName appendFormat:@"%@%@", [component substringToIndex:1].uppercaseString, [component substringFromIndex:1]];
+                    }
+                }];
+                exportedMethods[selectorName] = jsName.copy;
+            }
+            obj.exportedMethods = exportedMethods.copy;
+        }
+    }];
+    NSMutableSet *exportedKeys = [self.exportedKeys mutableCopy] ?: [NSMutableSet set];
+    [exportedKeys addObject:[NSString stringWithFormat:@"%@.(%@)", NSStringFromClass(clazz), selectorName]];
+    self.exportedKeys = exportedKeys;
+}
+
 - (void)exportScriptToJavaScript:(Class)clazz script:(NSString *)script isInnerScript:(BOOL)isInnerScript {
     [self.exportables enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, EDOExportable * _Nonnull obj, BOOL * _Nonnull stop) {
         if (obj.clazz == clazz) {
@@ -476,6 +520,9 @@
 }
 
 - (JSValue *)callMethodWithName:(NSString *)name arguments:(NSArray *)jsArguments owner:(JSValue *)owner {
+    if ([name hasPrefix:@"s."]) {
+        return [self callStaticMethodWithName:name arguments:jsArguments owner:owner];
+    }
     NSArray *arguments = [EDOObjectTransfer convertToNSArgumentsWithJSArguments:jsArguments owner:owner];
     NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
     SEL selector = NSSelectorFromString(name);
@@ -492,6 +539,33 @@
             [arguments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 char argumentType[256] = {};
                 method_getArgumentType(class_getInstanceMethod([ownerObject class], selector), (unsigned int)(idx + 2), argumentType, 256);
+                [EDOObjectTransfer setArgumentToInvocation:invocation idx:idx + 2 obj:obj argumentType:argumentType];
+            }];
+            [invocation invoke];
+            return [EDOObjectTransfer getReturnValueFromInvocation:invocation valueType:ret context:owner.context];
+        } @catch (NSException *exception) { } @finally { }
+    }
+    return [JSValue valueWithUndefinedInContext:owner.context];
+}
+
+- (JSValue *)callStaticMethodWithName:(NSString *)name arguments:(NSArray *)jsArguments owner:(JSValue *)owner {
+    NSArray *arguments = [EDOObjectTransfer convertToNSArgumentsWithJSArguments:jsArguments owner:owner];
+    NSObject *ownerObject = [EDOObjectTransfer convertToNSValueWithJSValue:owner owner:owner];
+    SEL selector = NSSelectorFromString([name stringByReplacingOccurrencesOfString:@"s." withString:@""]);
+    if ([ownerObject isKindOfClass:[NSString class]]) {
+        Class clazz = NSClassFromString((NSString *)ownerObject);
+        if (![self checkExported:clazz exportedKey:[NSString stringWithFormat:@"(%@)", name]]) {
+            return [JSValue valueWithUndefinedInContext:[JSContext currentContext]];
+        }
+        @try {
+            char ret[256];
+            method_getReturnType(class_getClassMethod(clazz, selector), ret, 256);
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[clazz methodSignatureForSelector:selector]];
+            [invocation setTarget:clazz];
+            [invocation setSelector:selector];
+            [arguments enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                char argumentType[256] = {};
+                method_getArgumentType(class_getClassMethod(clazz, selector), (unsigned int)(idx + 2), argumentType, 256);
                 [EDOObjectTransfer setArgumentToInvocation:invocation idx:idx + 2 obj:obj argumentType:argumentType];
             }];
             [invocation invoke];

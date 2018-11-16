@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (nonnull JSContext *)decodeContextFromString:(nonnull NSString *)script;
 
 + (nonnull JSContext *)decodeContextFromBundle:(nonnull NSString *)named
-                           withDebuggerAddress:(NSString *)debuggerAddress
+                           withDebuggerAddress:(nullable NSString *)debuggerAddress
                                   onReadyBlock:(void (^)(JSContext *))onReadyBlock;
 
 + (nullable id)objectFromContext:(nonnull JSContext *)context

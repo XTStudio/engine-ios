@@ -14,5 +14,6 @@
 
 + (float)staticValue;
 + (void)setStaticValue:(float)value;
++ (int)staticMethod;
 
 @end

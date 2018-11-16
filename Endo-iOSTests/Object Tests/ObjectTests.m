@@ -56,12 +56,13 @@
     XCTAssertEqual([self.context evaluateScript:@"obj.intValue"].toInt32, 123);
 }
 
-- (void)testScript {
+- (void)testStatic {
     XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticValue"].toDouble - 0.2) < 0.01);
     [self.context evaluateScript:@"FooObject.staticValue = 3.0"];
     XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticValue"].toDouble - 3.0) < 0.01);
     XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticFoo.floatValue"].toDouble - 0.1) < 0.01);
     XCTAssertTrue(fabs([self.context evaluateScript:@"FooObject.staticFoo2.floatValue"].toDouble - 0.1) < 0.01);
+    XCTAssertTrue([[self.context evaluateScript:@"FooObject.staticMethod()"] toInt32] == 1);
 }
 
 - (void)testGlobalObject {
