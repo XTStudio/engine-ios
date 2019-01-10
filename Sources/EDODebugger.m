@@ -142,8 +142,8 @@
                                              if (currentContext != nil) {
                                                  [currentContext evaluateScript:script];
                                              }
-                                             [self fetchUpdate:callback fallback:fallback];
                                          }
+                                         [self fetchUpdate:callback fallback:fallback];
                                      });
                                  }] resume];
 #endif
