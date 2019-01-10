@@ -60,6 +60,7 @@
 @property (nonatomic, strong) UIAlertController *activeAlertController;
 @property (nonatomic, assign) BOOL closed;
 @property (nonatomic, strong) NSString *lastTag;
+@property (nonatomic, weak) JSContext *currentContext;
 
 @end
 
@@ -100,6 +101,7 @@
                                          if (error == nil && data != nil) {
                                              NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                              JSContext *context = [[JSContext alloc] init];
+                                             self.currentContext = context;
                                              [[EDOExporter sharedExporter] exportWithContext:context];
                                              [context evaluateScript:script];
                                              [self.activeAlertController dismissViewControllerAnimated:NO completion:nil];
@@ -124,6 +126,29 @@
 #endif
 }
 
+- (void)liveReload:(void (^)(JSContext *))callback fallback:(void (^)(void))fallback {
+#ifndef DEBUG
+    if (fallback) {
+        fallback();
+    }
+#else
+    NSString *fetchURLString = [NSString stringWithFormat:@"http://%@/livereload", self.remoteAddress];
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:fetchURLString]
+                                 completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                         if (error == nil && data != nil) {
+                                             NSString *script = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                             JSContext *currentContext = self.currentContext;
+                                             if (currentContext != nil) {
+                                                 [currentContext evaluateScript:script];
+                                             }
+                                             [self fetchUpdate:callback fallback:fallback];
+                                         }
+                                     });
+                                 }] resume];
+#endif
+}
+
 - (void)fetchUpdate:(void (^)(JSContext *))callback fallback:(void (^)(void))fallback {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSString *fetchURLString = [NSString stringWithFormat:@"http://%@/version", self.remoteAddress];
@@ -138,9 +163,12 @@
                                                  }
                                                  else if (![self.lastTag isEqualToString:tag]) {
                                                      self.lastTag = tag;
-                                                     [self connect:callback fallback:^{
-                                                         
-                                                     }];
+                                                     if ([self.lastTag containsString:@".reload"]) {
+                                                         [self liveReload:callback fallback:^{}];
+                                                     }
+                                                     else {
+                                                         [self connect:callback fallback:^{}];
+                                                     }
                                                  }
                                                  else {
                                                      [self fetchUpdate:callback fallback:fallback];
