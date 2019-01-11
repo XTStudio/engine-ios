@@ -152,33 +152,37 @@
 - (void)fetchUpdate:(void (^)(JSContext *))callback fallback:(void (^)(void))fallback {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSString *fetchURLString = [NSString stringWithFormat:@"http://%@/version", self.remoteAddress];
-        [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:fetchURLString]
-                                     completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                             if (error == nil && data != nil) {
-                                                 NSString *tag = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                 if (self.lastTag == nil) {
-                                                     self.lastTag = tag;
-                                                     [self fetchUpdate:callback fallback:fallback];
-                                                 }
-                                                 else if (![self.lastTag isEqualToString:tag]) {
-                                                     self.lastTag = tag;
-                                                     if ([self.lastTag containsString:@".reload"]) {
-                                                         [self liveReload:callback fallback:^{}];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:fetchURLString]
+                                                               cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                           timeoutInterval:60.0];
+        [request setValue:self.lastTag ?: @"undefined" forHTTPHeaderField:@"code-version"];
+        [[[NSURLSession sharedSession] dataTaskWithRequest:request
+                                         completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 if (error == nil && data != nil) {
+                                                     NSString *tag = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                                     if (self.lastTag == nil) {
+                                                         self.lastTag = tag;
+                                                         [self fetchUpdate:callback fallback:fallback];
+                                                     }
+                                                     else if (![self.lastTag isEqualToString:tag]) {
+                                                         self.lastTag = tag;
+                                                         if ([self.lastTag containsString:@".reload"]) {
+                                                             [self liveReload:callback fallback:^{}];
+                                                         }
+                                                         else {
+                                                             [self connect:callback fallback:^{}];
+                                                         }
                                                      }
                                                      else {
-                                                         [self connect:callback fallback:^{}];
+                                                         [self fetchUpdate:callback fallback:fallback];
                                                      }
                                                  }
                                                  else {
                                                      [self fetchUpdate:callback fallback:fallback];
                                                  }
-                                             }
-                                             else {
-                                                 [self fetchUpdate:callback fallback:fallback];
-                                             }
-                                         });
-                                     }] resume];
+                                             });
+                                         }] resume];
     });
 }
 

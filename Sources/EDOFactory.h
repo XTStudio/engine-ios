@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (nonnull JSContext *)decodeContextFromBundle:(nonnull NSString *)named
                            withDebuggerAddress:(nullable NSString *)debuggerAddress
-                                  onReadyBlock:(void (^)(JSContext *))onReadyBlock;
+                                  onReadyBlock:(nonnull void (^)(JSContext *))onReadyBlock;
 
 + (nullable id)objectFromContext:(nonnull JSContext *)context
                         withName:(nullable NSString *)named;
