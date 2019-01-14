@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "xt-engine"
-  s.version      = "0.7.0"
+  s.version      = "0.8.0"
   s.summary      = "xt engine is a light-weight JavaScript bridge."
 
   s.description  = <<-DESC
