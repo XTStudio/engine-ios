@@ -38,24 +38,33 @@
 
 - (void)send:(NSString *)data {
     self.request.HTTPBody = [data dataUsingEncoding:NSUTF8StringEncoding];
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    [[[NSURLSession sharedSession] dataTaskWithRequest:self.request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (data != nil) {
-            self.responseText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (!self.async) {
+        NSURLResponse *response;
+        NSError *error;
+        NSData *syncData = [NSURLConnection sendSynchronousRequest:self.request
+                                                 returningResponse:&response
+                                                             error:&error];
+        if (syncData != nil) {
+            self.responseText = [[NSString alloc] initWithData:syncData encoding:NSUTF8StringEncoding];
         }
         if (response != nil && [response isKindOfClass:[NSHTTPURLResponse class]]) {
             self.status = [(NSHTTPURLResponse *)response statusCode];
         }
-        dispatch_semaphore_signal(semaphore);
-        if (self.async) {
+        self.onloadend = nil;
+    }
+    else {
+        [NSURLConnection sendAsynchronousRequest:self.request queue:[NSOperationQueue new] completionHandler:^(NSURLResponse * _Nullable response, NSData * _Nullable data, NSError * _Nullable connectionError) {
+            if (data != nil) {
+                self.responseText = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            }
+            if (response != nil && [response isKindOfClass:[NSHTTPURLResponse class]]) {
+                self.status = [(NSHTTPURLResponse *)response statusCode];
+            }
             if (self.onloadend) {
                 [self.onloadend callWithArguments:nil];
             }
-        }
-        self.onloadend = nil;
-    }] resume];
-    if (!self.async) {
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            self.onloadend = nil;
+        }];
     }
 }
 
