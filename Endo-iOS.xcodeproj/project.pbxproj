@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		63BD3F2721FB532900110FDC /* XTSHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BD3F2521FB532900110FDC /* XTSHttpRequest.m */; };
 		63C2967021916F8F003CF6F4 /* EDOLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C2966E21916F8F003CF6F4 /* EDOLogger.m */; };
 		63C2967621917BE5003CF6F4 /* EDOFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C2967521917BE5003CF6F4 /* EDOFactory.m */; };
 		63C2967A2191812E003CF6F4 /* EDODebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C296782191812D003CF6F4 /* EDODebugger.m */; };
@@ -50,6 +51,8 @@
 /* Begin PBXFileReference section */
 		3810BE98939004552148B5F7 /* libPods-Endo-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Endo-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C5DB9959260C5C86CFD1D6B /* Pods-Endo-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Endo-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Endo-iOS/Pods-Endo-iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		63BD3F2521FB532900110FDC /* XTSHttpRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XTSHttpRequest.m; sourceTree = "<group>"; };
+		63BD3F2621FB532900110FDC /* XTSHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XTSHttpRequest.h; sourceTree = "<group>"; };
 		63C2966E21916F8F003CF6F4 /* EDOLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EDOLogger.m; sourceTree = "<group>"; };
 		63C2966F21916F8F003CF6F4 /* EDOLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EDOLogger.h; sourceTree = "<group>"; };
 		63C2967521917BE5003CF6F4 /* EDOFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EDOFactory.m; sourceTree = "<group>"; };
@@ -253,6 +256,8 @@
 				90FA924B20C66B790096ED9D /* NSObject+EDOObjectRef.m */,
 				909365FF20E477CF008E4BCA /* JSContext+EDOThread.h */,
 				9093660020E477CF008E4BCA /* JSContext+EDOThread.m */,
+				63BD3F2621FB532900110FDC /* XTSHttpRequest.h */,
+				63BD3F2521FB532900110FDC /* XTSHttpRequest.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -418,6 +423,7 @@
 				63C2967021916F8F003CF6F4 /* EDOLogger.m in Sources */,
 				90FA924F20C66D2F0096ED9D /* EDOExportable.m in Sources */,
 				90FA923020C667EE0096ED9D /* AppDelegate.m in Sources */,
+				63BD3F2721FB532900110FDC /* XTSHttpRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
