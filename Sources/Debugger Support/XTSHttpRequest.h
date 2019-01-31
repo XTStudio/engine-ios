@@ -11,13 +11,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-//mockRequest.open("POST", "http://" + this.serverAddress + "/" + event)
-//mockRequest.setRequestHeader("device-uuid", this.deviceUUID)
-//mockRequest.send(JSON.stringify(params))
-//if (mockRequest.status === 200) {
-//    return JSON.parse(mockRequest.responseText)
-//}
-
 @class XTSHttpRequest;
 
 @protocol XTSHttpRequestExport <JSExport>

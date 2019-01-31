@@ -14,7 +14,6 @@
 #import "NSObject+EDOObjectRef.h"
 #import "EDOObjectTransfer.h"
 #import "JSContext+EDOThread.h"
-#import "XTSHttpRequest.h"
 
 @interface EDOContextWrapper: NSObject
 
@@ -68,7 +67,10 @@
 
 - (void)exportWithContext:(JSContext *)context {
     [EDOLogger attachToContext:context];
-    [XTSHttpRequest attachToContext:context];
+    if (NSClassFromString(@"XTSHttpRequest") != NULL) {
+        [NSClassFromString(@"XTSHttpRequest") performSelector:@selector(attachToContext:)
+                                                   withObject:context];
+    }
     if ([context[@"global"] isUndefined]) {
         [context evaluateScript:@"var global = this;" withSourceURL:nil];
     }

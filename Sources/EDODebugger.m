@@ -103,6 +103,9 @@
                                              JSContext *context = [[JSContext alloc] init];
                                              self.currentContext = context;
                                              [[EDOExporter sharedExporter] exportWithContext:context];
+                                             if (self.remoteAddress != nil) {
+                                                 context[@"$__ConnectorHostname"] = [self.remoteAddress componentsSeparatedByString:@":"].firstObject;
+                                             }
                                              [context evaluateScript:script];
                                              [self.activeAlertController dismissViewControllerAnimated:NO completion:nil];
                                              self.activeAlertController = nil;
