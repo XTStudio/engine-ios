@@ -17,6 +17,8 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "9.0"
 
   s.source       = { :git => "https://github.com/xtstudio/engine-ios.git", :tag => "#{s.version}" }
+
+  s.source_files  = "Sources", "Sources/*.{h,m}", "Sources/**/*.{h,m}"
   
   s.framework  = "JavaScriptCore"
   
@@ -25,16 +27,5 @@ Pod::Spec.new do |s|
   s.dependency "Aspects"
 
   s.dependency "CocoaLumberjack"
-
-  s.default_subspec = 'core'
-
-  s.subspec 'core' do |c|
-    c.source_files  = "Sources", "Sources/*.{h,m}"
-  end
-
-  s.subspec 'debugger' do |c|
-    c.dependency 'xt-engine/core'
-    c.source_files  = "Sources/Debugger Support/*.{h,m}", "Sources/Debugger Support/**/*.{h,m}"
-  end
 
 end
